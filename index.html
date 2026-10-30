@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TOOL RENTAL｜プロの工具レンタル</title>
+<meta name="description" content="プロ仕様の電動工具・測定器を、必要な日だけレンタル。Webで予約・利用規約の同意と署名まで完結。">
+<meta name="theme-color" content="#080c18">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --bg:#080c18;--bg2:#0d1324;--card:#10172c;--card2:#141d36;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
+  --text:#e9edf6;--muted:#8d96ab;--gold:#f5a800;--gold2:#ffc94d;--ok:#22c55e;--ng:#ef4444;--warn:#f59e0b;
+  --hd:60px;--r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:linear-gradient(to bottom,#000 0%,transparent 75%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 75%)}
+body::after{content:"";position:fixed;top:-25vh;left:50%;width:120vw;height:70vh;transform:translateX(-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at center,rgba(245,168,0,.16),transparent 60%)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:16px}
+img{max-width:100%;display:block}
+.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;font-weight:400}
+
+/* header */
+.hd{position:sticky;top:0;z-index:50;height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;
+  background:rgba(8,12,24,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--gold);display:grid;place-items:center;color:#080c18}
+.logo-txt{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.08em;line-height:1}
+.cart-btn{position:relative;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--line2);color:var(--text);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:var(--gold);color:#080c18;font-size:11px;font-weight:900;display:none;place-items:center;padding:0 5px}
+.badge.on{display:grid}
+
+main{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 16px 120px;min-height:70vh}
+.page{animation:fadeUp .45s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.fu{opacity:0;animation:fadeUp .6s ease forwards}
+
+/* hero */
+.hero{padding:56px 0 36px;text-align:left}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.14em;border:1px solid rgba(245,168,0,.35);border-radius:999px;padding:5px 12px;background:rgba(245,168,0,.06)}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(64px,15vw,132px);line-height:.88;letter-spacing:.02em;margin:18px 0 14px}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p{color:#c4cbdb;font-size:16px;max-width:520px}
+.hero-cta{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:14px 22px;font-weight:800;font-size:15px;transition:transform .12s,opacity .15s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn-gold{background:var(--gold);color:#080c18}
+.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.35;pointer-events:none}
+
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 40px}
+.feat{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.feat b{display:block;font-size:15px;margin:8px 0 4px}
+.feat span{font-size:13px;color:var(--muted)}
+.feat .ic{width:36px;height:36px;border-radius:10px;background:rgba(245,168,0,.12);color:var(--gold);display:grid;place-items:center}
+
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:34px 0 14px}
+.sec-h h2{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:40px;line-height:1;letter-spacing:.04em}
+.sec-h small{color:var(--muted);font-size:12px}
+
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;counter-reset:f}
+.flow div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;font-size:13px;font-weight:700;position:relative}
+.flow div::before{counter-increment:f;content:counter(f,decimal-leading-zero);display:block;font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;margin-bottom:6px;font-weight:400}
+
+/* filters */
+.tools{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;position:sticky;top:var(--hd);z-index:10;background:linear-gradient(var(--bg) 80%,transparent);padding:10px 0 12px}
+.search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:0 12px}
+.search input{flex:1;background:transparent;border:none;color:var(--text);padding:12px 0;outline:none}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;border:1px solid var(--line2);background:transparent;color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
+.chip.on{background:var(--gold);color:#080c18;border-color:var(--gold)}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:rgba(245,168,0,.4)}
+.thumb{aspect-ratio:1/1;background:linear-gradient(135deg,#141c35,#0b1123);position:relative;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:rgba(245,168,0,.45)}
+.tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:900;letter-spacing:.08em;padding:3px 8px;border-radius:6px}
+.tag-sale{background:var(--ng);color:#fff}
+.card-b{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
+.card-cat{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.06em}
+.card-n{font-weight:700;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-p{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.card-p b{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:400;line-height:1;color:var(--gold)}
+.card-p s{color:var(--muted);font-size:12px}
+.card-p span{font-size:11px;color:var(--muted)}
+.empty{padding:50px 10px;text-align:center;color:var(--muted)}
+
+/* detail */
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin:18px 0 12px;background:none;border:none}
+.dt{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:start}
+.gal{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#0b1123}
+.gal-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.gal-track::-webkit-scrollbar{display:none}
+.gal-track>div{flex:0 0 100%;aspect-ratio:1/1;scroll-snap-align:start;display:grid;place-items:center;color:rgba(245,168,0,.4)}
+.gal-track img{width:100%;height:100%;object-fit:cover}
+.dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}
+.dots i.on{background:var(--gold)}
+.dt h1{font-size:22px;line-height:1.45;margin:6px 0 4px}
+.dt .sub{color:var(--muted);font-size:13px}
+.price-tbl{margin:16px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.price-tbl div{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.price-tbl div:last-child{border-bottom:none}
+.price-tbl b{font-family:'Bebas Neue',sans-serif;font-size:24px;font-weight:400;color:var(--gold);letter-spacing:.03em}
+.price-tbl s{color:var(--muted);font-size:13px;margin-right:6px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:14px}
+.box-t{font-weight:900;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.box-t::before{content:"";width:4px;height:16px;background:var(--gold);border-radius:2px}
+.pre{white-space:pre-wrap;font-size:14px;color:#c8cfdd}
+
+/* calendar */
+.cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-h b{font-size:15px}
+.cal-nav{width:36px;height:36px;border-radius:10px;border:1px solid var(--line2);background:transparent;color:var(--text);font-size:18px}
+.cal-nav[disabled]{opacity:.25}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal .wd{text-align:center;font-size:11px;color:var(--muted);padding:2px 0}
+.cal .wd:first-child{color:#f87171}.cal .wd:last-child{color:#60a5fa}
+.cd{aspect-ratio:1/1;border-radius:9px;border:1px solid transparent;background:rgba(255,255,255,.03);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;line-height:1.1;padding:0}
+.cd small{font-size:10px;margin-top:2px}
+.cd.ok small{color:var(--ok)}.cd.few small{color:var(--warn)}.cd.ng small{color:var(--ng)}
+.cd.ng{opacity:.55}
+.cd.off{opacity:.18;pointer-events:none;background:transparent}
+.cd.blank{visibility:hidden}
+.cd.in{background:rgba(245,168,0,.18);border-color:rgba(245,168,0,.3)}
+.cd.edge{background:var(--gold);color:#080c18;font-weight:900}
+.cd.edge small{color:#080c18}
+.cd.buf{background:repeating-linear-gradient(135deg,rgba(245,168,0,.08) 0 4px,transparent 4px 8px)}
+.cal-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:10px}
+.msg{font-size:13px;padding:10px 12px;border-radius:10px;margin-top:10px}
+.msg-ok{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.25)}
+.msg-ng{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.msg-info{background:rgba(245,168,0,.08);color:#fcd58a;border:1px solid rgba(245,168,0,.25)}
+
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.qty button{width:40px;height:40px;background:transparent;border:none;color:var(--text);font-size:18px}
+.qty span{min-width:36px;text-align:center;font-weight:800}
+.est{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px}
+.est b{font-family:'Bebas Neue',sans-serif;font-size:34px;font-weight:400;color:var(--gold);line-height:1}
+
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(8,12,24,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+.sticky-cta .in{max-width:1080px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.sticky-cta .sum{flex:1;min-width:0}
+.sticky-cta .sum small{display:block;font-size:11px;color:var(--muted)}
+.sticky-cta .sum b{font-family:'Bebas Neue',sans-serif;font-size:28px;font-weight:400;color:var(--gold);line-height:1}
+
+/* steps */
+.steps{display:flex;gap:6px;margin:22px 0 18px}
+.steps div{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.steps div i{display:block;height:4px;border-radius:2px;background:var(--line2);margin-bottom:6px}
+.steps div.on{color:var(--gold)}.steps div.on i{background:var(--gold)}
+.steps div.done i{background:rgba(245,168,0,.45)}
+.ttl{font-size:20px;font-weight:900;margin-bottom:6px}
+
+.line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.line:last-child{border-bottom:none}
+.line .im{width:64px;height:64px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#0b1123;display:grid;place-items:center;color:rgba(245,168,0,.4)}
+.line .im img{width:100%;height:100%;object-fit:cover}
+.line .nm{font-weight:700;font-size:14px;line-height:1.4}
+.line .meta{font-size:12px;color:var(--muted)}
+.line .rm{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline}
+.ok-tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
+.ok-tag.y{background:rgba(34,197,94,.14);color:#86efac}.ok-tag.n{background:rgba(239,68,68,.14);color:#fca5a5}
+
+.row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.row.tot{border-top:1px solid var(--line2);margin-top:6px;padding-top:12px;font-weight:900}
+.row.tot b{font-family:'Bebas Neue',sans-serif;font-size:30px;font-weight:400;color:var(--gold);line-height:1}
+
+.radio{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1.5px solid var(--line2);border-radius:12px;margin-bottom:8px;cursor:pointer}
+.radio input{width:20px;height:20px;accent-color:var(--gold);margin-top:2px;flex-shrink:0}
+.radio.on{border-color:var(--gold);background:rgba(245,168,0,.06)}
+.radio small{display:block;color:var(--muted);font-size:12px}
+
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.fg label em{font-style:normal;color:var(--ng);font-size:11px;margin-left:6px}
+.inp{width:100%;background:var(--bg2);border:1.5px solid var(--line2);border-radius:10px;color:var(--text);padding:12px 14px;outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--gold)}
+.inp.err{border-color:var(--ng)}
+.err-t{color:#fca5a5;font-size:12px;margin-top:4px;display:none}
+.err-t.on{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dates{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+input[type=date].inp{color-scheme:dark}
+
+/* consent (ZELI方式) */
+.terms{max-height:280px;overflow-y:auto;background:#0a0f1f;border:1px solid var(--line2);border-radius:12px;padding:16px;font-size:13px;line-height:1.85;white-space:pre-wrap;color:#cfd5e2}
+.terms-note{font-size:12px;color:var(--muted);margin:8px 2px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:15px 14px;border:1.5px solid var(--line2);border-radius:12px;margin-bottom:10px;cursor:pointer;background:var(--bg2);transition:border-color .15s,background .15s}
+.chk input{width:22px;height:22px;flex-shrink:0;accent-color:var(--ok);cursor:pointer;margin-top:1px}
+.chk span{font-size:15px;line-height:1.65;font-weight:600}
+.chk.on{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.06)}
+.chk.dis{opacity:.45;pointer-events:none}
+.sig-wrap{border:2px dashed rgba(245,168,0,.45);border-radius:14px;background:#fff;padding:6px}
+.sig-wrap canvas{width:100%;height:200px;display:block;touch-action:none;border-radius:10px;background:#fff;cursor:crosshair}
+.sig-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:8px 4px 0}
+
+.done{text-align:center;padding:30px 0}
+.done .mk{width:76px;height:76px;border-radius:50%;margin:0 auto 16px;background:rgba(245,168,0,.12);border:2px solid var(--gold);display:grid;place-items:center;color:var(--gold);animation:pop .5s ease both}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.onum{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.06em;color:var(--gold)}
+
+.ft{position:relative;z-index:1;border-top:1px solid var(--line);padding:28px 16px 40px;text-align:center;color:var(--muted);font-size:12px}
+.ft a{margin:0 10px;text-decoration:underline}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;background:#1d2642;color:var(--text);border:1px solid var(--line2);padding:12px 18px;border-radius:12px;font-size:14px;z-index:100;transition:.25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:rgba(239,68,68,.5);color:#fecaca}
+.loading{padding:60px 0;text-align:center;color:var(--muted)}
+.spin{width:28px;height:28px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 10px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+@media (max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .dt{grid-template-columns:1fr;gap:16px}
+  .feats{grid-template-columns:1fr}
+  .flow{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+  .flow div{padding:10px 4px;font-size:11px}
+  .flow div::before{font-size:20px}
+  .hero{padding:40px 0 26px}
+}
+</style>
+</head>
+<body>
+<header class="hd">
+  <a href="#/" class="logo">
+    <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span>
+    <span class="logo-txt" id="store-name">TOOL RENTAL</span>
+  </a>
+  <a href="#/cart" class="cart-btn" aria-label="カート">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+    カート<span class="badge" id="badge">0</span>
+  </a>
+</header>
+
+<main id="app"><div class="loading"><div class="spin"></div>読み込み中…</div></main>
+<div id="cta-slot"></div>
+
+<footer class="ft">
+  <div><a href="#/terms">利用規約</a><a href="#" id="contact-link">お問い合わせ</a></div>
+  <div style="margin-top:10px" id="ft-copy">© TOOL RENTAL</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   設定（新しいSupabaseプロジェクトの値に差し替え）
+   ════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+const CART_KEY = 'toolrental_cart_v1';
+const CUST_KEY = 'toolrental_customer_v1';
+const DONE_KEY = 'toolrental_done_v1';
+
+const S = { settings: {}, items: [], cats: [], cal: {}, q: '', cat: '' };
+
+/* ───────── 共通 ───────── */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const yen = (n) => '¥' + Number(n || 0).toLocaleString('ja-JP');
+const ICON_TOOL = '<svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg>';
+function toast(msg, err) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast on' + (err ? ' err' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => (t.className = 'toast'), err ? 5000 : 2600);
+}
+function lsGet(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function ssGet(k, d) { try { const v = sessionStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function ssSet(k, v) { try { sessionStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function setI(k, def) { const v = parseInt(S.settings[k], 10); return Number.isFinite(v) ? v : def; }
+
+/* ───────── 日付（日本時間・YYYY-MM-DD） ───────── */
+const DAY = 86400000;
+const WD = ['日', '月', '火', '水', '木', '金', '土'];
+function todayJST() { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); }
+function d2n(s) { const [y, m, d] = s.split('-').map(Number); return Math.round(Date.UTC(y, m - 1, d) / DAY); }
+function n2d(n) { return new Date(n * DAY).toISOString().slice(0, 10); }
+function addD(s, k) { return n2d(d2n(s) + k); }
+function diffD(a, b) { return d2n(b) - d2n(a); }
+function isDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && n2d(d2n(s)) === s; }
+function jpD(s) { const n = d2n(s); const d = new Date(n * DAY); return `${d.getUTCMonth() + 1}/${d.getUTCDate()}(${WD[d.getUTCDay()]})`; }
+function rule() {
+  const t = todayJST();
+  return {
+    today: t, minStart: addD(t, setI('lead_days', 2)), maxStart: addD(t, 180),
+    minDays: Math.max(setI('min_days', 1), 1), maxDays: Math.max(setI('max_days', 30), 1), buf: Math.max(setI('buffer_days', 1), 0),
+  };
+}
+
+/* ───────── カート ───────── */
+function loadCart() {
+  const c = lsGet(CART_KEY, {});
+  return {
+    items: Array.isArray(c.items) ? c.items.filter((x) => x && typeof x.id === 'string' && Number.isInteger(x.qty) && x.qty > 0).slice(0, 20) : [],
+    start: isDate(c.start) ? c.start : '', end: isDate(c.end) ? c.end : '',
+    method: c.method === 'pickup' ? 'pickup' : 'ship',
+  };
+}
+let cart = loadCart();
+function saveCart() { lsSet(CART_KEY, cart); updBadge(); }
+function updBadge() { const n = cart.items.reduce((a, b) => a + b.qty, 0); const b = $('#badge'); b.textContent = n; b.classList.toggle('on', n > 0); }
+const itemById = (id) => S.items.find((i) => i.id === id);
+function cleanCart() { const before = cart.items.length; cart.items = cart.items.filter((x) => itemById(x.id)); if (cart.items.length !== before) saveCart(); }
+
+/* ───────── 料金 ───────── */
+const firstPrice = (it) => (it.sale_price_day != null ? it.sale_price_day : it.price_day);
+function lineCalc(it, qty, days) {
+  const unit = firstPrice(it) + it.price_extra_day * Math.max(days - 1, 0);
+  return { unit, line: unit * qty, dep: it.deposit * qty };
+}
+function periodInfo(start, end) {
+  const R = rule();
+  if (!isDate(start) || !isDate(end)) return { ok: false, msg: 'ご利用期間を選んでください' };
+  if (end < start) return { ok: false, msg: '返却日は利用開始日以降にしてください' };
+  if (start < R.minStart) return { ok: false, msg: `利用開始日は ${jpD(R.minStart)} 以降を選んでください` };
+  if (start > R.maxStart) return { ok: false, msg: '予約は180日先までです' };
+  const days = diffD(start, end) + 1;
+  if (days < R.minDays || days > R.maxDays) return { ok: false, msg: `ご利用日数は ${R.minDays}〜${R.maxDays}日です`, days };
+  return { ok: true, days };
+}
+function cartCalc() {
+  const p = periodInfo(cart.start, cart.end);
+  const days = p.ok ? p.days : 1;
+  let sub = 0, dep = 0;
+  const lines = cart.items.map((x) => { const it = itemById(x.id); const c = lineCalc(it, x.qty, days); sub += c.line; dep += c.dep; return { ...x, it, ...c }; });
+  const ship = cart.method === 'ship' && cart.items.length ? setI('shipping_fee', 0) : 0;
+  return { p, days, lines, sub, dep, ship, total: sub + dep + ship };
+}
+
+/* ───────── 空き状況 ───────── */
+async function loadCal(id, force) {
+  const c = S.cal[id];
+  if (c && !force && Date.now() - c.at < 60000) return c;
+  const t = todayJST();
+  const [a, b] = await Promise.all([
+    sb.rpc('get_item_calendar', { p_item: id, p_from: t, p_to: addD(t, 120) }),
+    sb.rpc('get_item_calendar', { p_item: id, p_from: addD(t, 121), p_to: addD(t, 241) }),
+  ]);
+  if (a.error) throw a.error;
+  if (b.error) throw b.error;
+  const m = {};
+  let stock = itemById(id)?.stock ?? 0;
+  [...(a.data || []), ...(b.data || [])].forEach((r) => { m[r.day] = r.booked; stock = r.stock; });
+  S.cal[id] = { m, stock, at: Date.now() };
+  return S.cal[id];
+}
+function freeOn(id, day) { const c = S.cal[id]; if (!c) return 0; return c.stock - (c.m[day] || 0); }
+/* 期間＋返却後の点検日数ぶん、qty台ずつ空いているか */
+function rangeFree(id, qty, start, end) {
+  const R = rule();
+  let min = Infinity;
+  for (let d = start; d <= addD(end, R.buf); d = addD(d, 1)) min = Math.min(min, freeOn(id, d));
+  return { ok: min >= qty, left: Math.max(min === Infinity ? 0 : min, 0) };
+}
+
+/* ───────── 起動 ───────── */
+async function boot() {
+  try {
+    const [st, it, ct] = await Promise.all([
+      sb.from('settings').select('key,value'),
+      sb.from('items').select('*').eq('is_active', true).order('sort').order('created_at', { ascending: false }),
+      sb.from('categories').select('*').order('sort').order('name'),
+    ]);
+    if (st.error) throw st.error; if (it.error) throw it.error; if (ct.error) throw ct.error;
+    st.data.forEach((r) => (S.settings[r.key] = r.value));
+    S.items = it.data || []; S.cats = ct.data || [];
+  } catch (e) {
+    console.error(e);
+    $('#app').innerHTML = `<div class="empty">データを読み込めませんでした。<br><small>${esc(e.message || e)}</small></div>`;
+    return;
+  }
+  const name = S.settings.store_name || 'TOOL RENTAL';
+  $('#store-name').textContent = name;
+  $('#ft-copy').textContent = '© ' + name;
+  document.title = name + '｜' + (S.settings.store_tagline || '工具レンタル');
+  const ce = S.settings.contact_email;
+  const cl = $('#contact-link');
+  if (ce) cl.href = 'mailto:' + ce; else cl.style.display = 'none';
+  cleanCart(); updBadge();
+  window.addEventListener('hashchange', route);
+  route();
+}
+
+function route() {
+  const h = location.hash.replace(/^#/, '') || '/';
+  $('#cta-slot').innerHTML = '';
+  window.scrollTo(0, 0);
+  const m = h.match(/^\/item\/([0-9a-f-]{36})$/i);
+  if (m) return pgItem(m[1]);
+  switch (h) {
+    case '/cart': return pgCart();
+    case '/info': return pgInfo();
+    case '/consent': return pgConsent();
+    case '/done': return pgDone();
+    case '/terms': return pgTerms();
+    default: return pgHome();
+  }
+}
+const setApp = (html) => { $('#app').innerHTML = `<div class="page">${html}</div>`; };
+const cta = (html) => { $('#cta-slot').innerHTML = `<div class="sticky-cta"><div class="in">${html}</div></div>`; };
+
+/* ───────── トップ ───────── */
+function itemCard(it) {
+  const cat = S.cats.find((c) => c.id === it.category_id);
+  const img = it.images?.[0];
+  const sale = it.sale_price_day != null && it.sale_price_day < it.price_day;
+  return `<a class="card" href="#/item/${it.id}">
+    <div class="thumb">${img ? `<img src="${esc(img)}" alt="" loading="lazy">` : `<div class="ph">${ICON_TOOL}</div>`}${sale ? '<span class="tag tag-sale">SALE</span>' : ''}</div>
+    <div class="card-b">
+      ${cat ? `<div class="card-cat">${esc(cat.name)}</div>` : ''}
+      <div class="card-n">${esc(it.name)}</div>
+      <div class="card-p">${sale ? `<s>${yen(it.price_day)}</s>` : ''}<b>${yen(firstPrice(it))}</b><span>/1日〜</span></div>
+      <div style="font-size:11px;color:var(--muted)">追加1日 ${yen(it.price_extra_day)}</div>
+    </div></a>`;
+}
+function filtered() {
+  const q = S.q.trim().toLowerCase();
+  return S.items.filter((it) => (!S.cat || it.category_id === S.cat) &&
+    (!q || [it.name, it.maker, it.model, it.description].join(' ').toLowerCase().includes(q)));
+}
+function renderGrid() {
+  const list = filtered();
+  $('#grid').innerHTML = list.length ? list.map(itemCard).join('') : '<div class="empty" style="grid-column:1/-1">該当する工具がありません</div>';
+}
+function pgHome() {
+  const s = S.settings;
+  const usedCats = S.cats.filter((c) => S.items.some((i) => i.category_id === c.id));
+  setApp(`
+  <section class="hero">
+    <div class="eyebrow fu">● PRO TOOL RENTAL</div>
+    <h1 class="fu" style="animation-delay:.08s">RENT THE<br><em>PRO TOOLS.</em></h1>
+    <p class="fu" style="animation-delay:.16s">${esc(s.store_tagline || '')}<br>買うほどじゃない、でもプロ仕様を使いたい。そんな日のための工具レンタル。</p>
+    <div class="hero-cta fu" style="animation-delay:.24s"><a href="#list" class="btn btn-gold">工具をさがす</a><a href="#/terms" class="btn btn-ghost">利用規約</a></div>
+  </section>
+  <div class="feats">
+    <div class="feat fu" style="animation-delay:.3s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><b>必要な日だけ</b><span>1日から。空き状況はカレンダーでひと目で確認。</span></div>
+    <div class="feat fu" style="animation-delay:.36s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><b>配送・店頭受取</b><span>往復配送か店頭受取を選べます。</span></div>
+    <div class="feat fu" style="animation-delay:.42s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><b>Webで同意・署名</b><span>利用規約の確認と署名までスマホで完結。</span></div>
+  </div>
+  <div class="sec-h"><h2>HOW IT WORKS</h2><small>ご利用の流れ</small></div>
+  <div class="flow"><div>工具を選ぶ</div><div>期間を選ぶ</div><div>規約に同意・署名</div><div>受け取る</div><div>返却する</div></div>
+  <div class="sec-h" id="list"><h2>TOOLS</h2><small>${S.items.length}点</small></div>
+  <div class="tools">
+    <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8d96ab" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="q" type="search" placeholder="工具名・メーカーで検索" value="${esc(S.q)}"></div>
+    ${usedCats.length ? `<div class="chips"><button class="chip ${S.cat ? '' : 'on'}" data-cat="">すべて</button>${usedCats.map((c) => `<button class="chip ${S.cat === c.id ? 'on' : ''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>` : ''}
+  </div>
+  <div class="grid" id="grid"></div>`);
+  renderGrid();
+  $('#q').addEventListener('input', (e) => { S.q = e.target.value; renderGrid(); });
+  document.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => {
+    S.cat = b.dataset.cat; document.querySelectorAll('.chip').forEach((x) => x.classList.toggle('on', x === b)); renderGrid();
+  }));
+  document.querySelector('.hero-cta a[href="#list"]').addEventListener('click', (e) => { e.preventDefault(); $('#list').scrollIntoView({ behavior: 'smooth' }); });
+}
+
+/* ───────── 商品詳細＋カレンダー ───────── */
+const D = { id: '', qty: 1, month: '', start: '', end: '', pending: false };
+async function pgItem(id) {
+  const it = itemById(id);
+  if (!it) { setApp('<button class="back" onclick="history.back()">‹ 戻る</button><div class="empty">この工具は現在貸出していません</div>'); return; }
+  const inCart = cart.items.find((x) => x.id === id);
+  D.id = id; D.qty = inCart ? inCart.qty : 1; D.start = cart.start; D.end = cart.end; D.pending = false;
+  const R = rule();
+  D.month = (D.start && D.start >= R.today ? D.start : R.minStart).slice(0, 8) + '01';
+  const cat = S.cats.find((c) => c.id === it.category_id);
+  const imgs = it.images?.length ? it.images : [null];
+  const sale = it.sale_price_day != null && it.sale_price_day < it.price_day;
+  setApp(`
+  <button class="back" onclick="location.hash='#/'">‹ 一覧へ戻る</button>
+  <div class="dt">
+    <div>
+      <div class="gal"><div class="gal-track" id="gal">${imgs.map((u) => `<div>${u ? `<img src="${esc(u)}" alt="">` : ICON_TOOL}</div>`).join('')}</div>
+      ${imgs.length > 1 ? `<div class="dots">${imgs.map((_, i) => `<i class="${i ? '' : 'on'}"></i>`).join('')}</div>` : ''}</div>
+      ${it.specs ? `<div class="box"><div class="box-t">仕様</div><div class="pre">${esc(it.specs)}</div></div>` : ''}
+      ${it.description ? `<div class="box"><div class="box-t">説明</div><div class="pre">${esc(it.description)}</div></div>` : ''}
+    </div>
+    <div>
+      ${cat ? `<div class="card-cat">${esc(cat.name)}</div>` : ''}
+      <h1>${esc(it.name)}</h1>
+      <div class="sub">${esc([it.maker, it.model].filter(Boolean).join('／'))}</div>
+      <div class="price-tbl">
+        <div><span>1日目</span><span>${sale ? `<s>${yen(it.price_day)}</s>` : ''}<b>${yen(firstPrice(it))}</b></span></div>
+        <div><span>2日目以降（1日あたり）</span><b>${yen(it.price_extra_day)}</b></div>
+        <div><span>保証金（返却後に返金）</span><b>${yen(it.deposit)}</b></div>
+      </div>
+      <div class="box">
+        <div class="box-t">ご利用期間と空き状況</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:13px;color:var(--muted)">台数（保有 ${it.stock}台）</span>
+          <div class="qty"><button id="q-m" aria-label="減らす">−</button><span id="q-v">${D.qty}</span><button id="q-p" aria-label="増やす">＋</button></div>
+        </div>
+        <div id="cal-box"><div class="loading" style="padding:30px 0"><div class="spin"></div>空き状況を確認中…</div></div>
+        <div class="msg msg-info" style="margin-top:12px" id="cal-hint">開始日 → 返却日の順にタップ（同じ日を2回で1日だけ）</div>
+        <div id="cal-msg"></div>
+        <div class="est"><span style="font-size:13px;color:var(--muted)" id="est-l">お見積り</span><b id="est-v">—</b></div>
+      </div>
+    </div>
+  </div>`);
+  const g = $('#gal');
+  if (imgs.length > 1) g.addEventListener('scroll', () => {
+    const i = Math.round(g.scrollLeft / g.clientWidth);
+    document.querySelectorAll('.dots i').forEach((d, k) => d.classList.toggle('on', k === i));
+  }, { passive: true });
+  $('#q-m').onclick = () => { if (D.qty > 1) { D.qty--; $('#q-v').textContent = D.qty; drawCal(); } };
+  $('#q-p').onclick = () => { if (D.qty < it.stock) { D.qty++; $('#q-v').textContent = D.qty; drawCal(); } else toast(`保有台数は${it.stock}台です`); };
+  cta(`<div class="sum"><small id="cta-s">期間を選んでください</small><b id="cta-v">—</b></div><button class="btn btn-gold" id="add-btn" disabled>${inCart ? 'カートを更新' : 'カートに入れる'}</button>`);
+  $('#add-btn').onclick = addToCart;
+  try { await loadCal(id, true); } catch (e) { $('#cal-box').innerHTML = `<div class="msg msg-ng">空き状況を取得できませんでした（${esc(e.message)}）</div>`; return; }
+  if (D.id === id) drawCal();
+}
+function drawCal() {
+  const it = itemById(D.id); if (!it || !$('#cal-box') || !S.cal[D.id]) return;
+  const R = rule();
+  const first = D.month; const y = +first.slice(0, 4); const mo = +first.slice(5, 7);
+  const startW = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay();
+  const dim = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  const lastSel = addD(R.maxStart, R.maxDays);
+  const minMonth = R.today.slice(0, 8) + '01';
+  const maxMonth = lastSel.slice(0, 8) + '01';
+  const hasRange = D.start && D.end && !D.pending;
+  let cells = ['日', '月', '火', '水', '木', '金', '土'].map((w) => `<div class="wd">${w}</div>`).join('');
+  for (let i = 0; i < startW; i++) cells += '<div class="cd blank"></div>';
+  for (let d = 1; d <= dim; d++) {
+    const ds = `${first.slice(0, 8)}${String(d).padStart(2, '0')}`;
+    const free = freeOn(D.id, ds);
+    let cls = 'cd', mark = '';
+    const inStartRange = ds >= R.minStart && ds <= R.maxStart;
+    const selectable = D.pending ? ((ds >= D.start && ds <= addD(D.start, R.maxDays - 1)) || (inStartRange && ds < D.start)) : inStartRange;
+    if (ds < R.today || ds > lastSel || !selectable) cls += ' off';
+    else if (free >= D.qty) { cls += ' ok'; mark = '○'; }
+    else if (free > 0) { cls += ' few'; mark = '△'; }
+    else { cls += ' ng'; mark = '×'; }
+    if (D.start && ((hasRange && ds >= D.start && ds <= D.end) || ds === D.start)) cls += (ds === D.start || ds === D.end) ? ' edge' : ' in';
+    else if (hasRange && R.buf && ds > D.end && ds <= addD(D.end, R.buf)) cls += ' buf';
+    cells += `<button class="${cls}" data-d="${ds}">${d}<small>${mark}</small></button>`;
+  }
+  $('#cal-box').innerHTML = `
+    <div class="cal-h"><button class="cal-nav" id="c-prev" ${first <= minMonth ? 'disabled' : ''}>‹</button><b>${y}年${mo}月</b><button class="cal-nav" id="c-next" ${first >= maxMonth ? 'disabled' : ''}>›</button></div>
+    <div class="cal">${cells}</div>
+    <div class="cal-legend"><span><b style="color:var(--ok)">○</b> 空きあり</span><span><b style="color:var(--warn)">△</b> 台数を減らせば空きあり</span><span><b style="color:var(--ng)">×</b> 空きなし</span>${R.buf ? `<span>斜線＝返却後の点検日（${R.buf}日）</span>` : ''}</div>`;
+  $('#c-prev').onclick = () => { D.month = addMonth(D.month, -1); drawCal(); };
+  $('#c-next').onclick = () => { D.month = addMonth(D.month, 1); drawCal(); };
+  document.querySelectorAll('#cal-box .cd[data-d]').forEach((b) => b.addEventListener('click', () => pickDay(b.dataset.d)));
+  updEstimate();
+}
+function addMonth(first, k) { const y = +first.slice(0, 4), m = +first.slice(5, 7) - 1 + k; const d = new Date(Date.UTC(y, m, 1)); return d.toISOString().slice(0, 8) + '01'; }
+function pickDay(ds) {
+  if (!D.pending) { D.start = ds; D.end = ''; D.pending = true; }
+  else if (ds < D.start) { D.start = ds; }
+  else { D.end = ds; D.pending = false; }
+  $('#cal-hint').textContent = D.pending ? `開始日 ${jpD(D.start)}。返却日をタップしてください` : '開始日 → 返却日の順にタップ（同じ日を2回で1日だけ）';
+  drawCal();
+}
+function updEstimate() {
+  const it = itemById(D.id); const box = $('#cal-msg'); if (!box) return;
+  const add = $('#add-btn');
+  if (D.pending || !D.start || !D.end) {
+    box.innerHTML = ''; $('#est-v').textContent = '—'; $('#cta-v').textContent = '—'; $('#cta-s').textContent = '期間を選んでください'; add.disabled = true; return;
+  }
+  const p = periodInfo(D.start, D.end);
+  if (!p.ok) { box.innerHTML = `<div class="msg msg-ng">${esc(p.msg)}</div>`; add.disabled = true; $('#est-v').textContent = '—'; $('#cta-v').textContent = '—'; return; }
+  const f = rangeFree(D.id, D.qty, D.start, D.end);
+  const c = lineCalc(it, D.qty, p.days);
+  $('#est-l').textContent = `${p.days}日間 × ${D.qty}台（保証金別）`;
+  $('#est-v').textContent = yen(c.line);
+  $('#cta-s').textContent = `${jpD(D.start)}〜${jpD(D.end)}・${p.days}日間`;
+  $('#cta-v').textContent = yen(c.line);
+  if (!f.ok) { box.innerHTML = `<div class="msg msg-ng">この期間は空きが足りません（空き ${f.left}台）。別の日をお選びください。</div>`; add.disabled = true; return; }
+  box.innerHTML = `<div class="msg msg-ok">✓ ${jpD(D.start)} 〜 ${jpD(D.end)}（${p.days}日間）空きがあります</div>`;
+  add.disabled = false;
+}
+function addToCart() {
+  const it = itemById(D.id); if (!it || D.pending) return;
+  const changed = cart.items.length && (cart.start !== D.start || cart.end !== D.end) && cart.items.some((x) => x.id !== D.id);
+  cart.start = D.start; cart.end = D.end;
+  const ex = cart.items.find((x) => x.id === D.id);
+  if (ex) ex.qty = D.qty; else cart.items.push({ id: D.id, qty: D.qty });
+  saveCart();
+  toast(changed ? 'カートに入れました（カート内の期間も変更しました）' : 'カートに入れました');
+  location.hash = '#/cart';
+}
+
+/* ───────── ステップ表示 ───────── */
+function steps(n) {
+  const names = ['カート・期間', 'お客様情報', '規約・署名', '完了'];
+  return `<div class="steps">${names.map((t, i) => `<div class="${i + 1 === n ? 'on' : i + 1 < n ? 'done' : ''}"><i></i>${t}</div>`).join('')}</div>`;
+}
+
+/* ───────── カート ───────── */
+async function pgCart() {
+  if (!cart.items.length) {
+    setApp(`${steps(1)}<div class="empty">カートは空です<br><br><a class="btn btn-gold" href="#/">工具をさがす</a></div>`); return;
+  }
+  const R = rule();
+  setApp(`${steps(1)}
+  <div class="ttl">カート</div>
+  <div class="box" id="lines"></div>
+  <div class="box"><div class="box-t">ご利用期間（カート内共通）</div>
+    <div class="dates">
+      <input type="date" class="inp" id="d-s" min="${R.minStart}" max="${R.maxStart}" value="${esc(cart.start)}">
+      <span style="color:var(--muted)">〜</span>
+      <input type="date" class="inp" id="d-e" min="${R.minStart}" max="${addD(R.maxStart, R.maxDays)}" value="${esc(cart.end)}">
+    </div>
+    <div id="p-msg"></div>
+  </div>
+  <div class="box"><div class="box-t">受取方法</div>
+    <label class="radio ${cart.method === 'ship' ? 'on' : ''}"><input type="radio" name="m" value="ship" ${cart.method === 'ship' ? 'checked' : ''}><div><b>配送（往復）</b> ${yen(setI('shipping_fee', 0))}<small>利用開始日までにお届けします。返却日に同梱の伝票で発送してください。</small></div></label>
+    <label class="radio ${cart.method === 'pickup' ? 'on' : ''}"><input type="radio" name="m" value="pickup" ${cart.method === 'pickup' ? 'checked' : ''}><div><b>店頭受取</b> 無料<small>${esc(S.settings.pickup_info || '')}</small></div></label>
+  </div>
+  <div class="box" id="totals"></div>`);
+  $('#d-s').onchange = (e) => { cart.start = e.target.value; if (cart.end && cart.end < cart.start) cart.end = cart.start; if (!cart.end) cart.end = cart.start; $('#d-e').value = cart.end; saveCart(); renderCart(); };
+  $('#d-e').onchange = (e) => { cart.end = e.target.value; saveCart(); renderCart(); };
+  document.querySelectorAll('input[name=m]').forEach((r) => r.onchange = () => {
+    cart.method = r.value; saveCart();
+    document.querySelectorAll('.radio').forEach((l) => l.classList.toggle('on', l.querySelector('input').checked)); renderCart();
+  });
+  cta(`<div class="sum"><small id="cta-s">合計（保証金・送料込）</small><b id="cta-v">—</b></div><button class="btn btn-gold" id="go-info" disabled>お客様情報へ</button>`);
+  $('#go-info').onclick = () => { if (cartReady()) location.hash = '#/info'; };
+  renderCart();
+  try { await Promise.all(cart.items.map((x) => loadCal(x.id, true))); } catch (e) { toast('空き状況を取得できませんでした', true); }
+  if (location.hash === '#/cart') renderCart();
+}
+function cartReady() {
+  const c = cartCalc();
+  if (!c.p.ok || !cart.items.length) return false;
+  return c.lines.every((l) => S.cal[l.id] && rangeFree(l.id, l.qty, cart.start, cart.end).ok);
+}
+function renderCart() {
+  if (!$('#lines')) return;
+  const c = cartCalc();
+  $('#lines').innerHTML = c.lines.map((l) => {
+    const loaded = !!S.cal[l.id];
+    const f = c.p.ok && loaded ? rangeFree(l.id, l.qty, cart.start, cart.end) : null;
+    return `<div class="line">
+      <a class="im" href="#/item/${l.id}">${l.it.images?.[0] ? `<img src="${esc(l.it.images[0])}" alt="">` : ICON_TOOL}</a>
+      <div style="flex:1;min-width:0">
+        <div class="nm">${esc(l.it.name)}</div>
+        <div class="meta">1日目 ${yen(firstPrice(l.it))}／追加1日 ${yen(l.it.price_extra_day)}／保証金 ${yen(l.it.deposit)}</div>
+        ${f ? `<span class="ok-tag ${f.ok ? 'y' : 'n'}">${f.ok ? '空きあり' : `空きなし（空き${f.left}台）`}</span>` : (c.p.ok ? '<span class="ok-tag">確認中…</span>' : '')}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <div class="qty"><button data-a="m" data-id="${l.id}">−</button><span>${l.qty}</span><button data-a="p" data-id="${l.id}">＋</button></div>
+          <div style="text-align:right"><div style="font-weight:800">${c.p.ok ? yen(l.line) : '—'}</div><button class="rm" data-a="rm" data-id="${l.id}">削除</button></div>
+        </div>
+      </div></div>`;
+  }).join('');
+  $('#lines').querySelectorAll('button[data-a]').forEach((b) => b.onclick = () => {
+    const x = cart.items.find((i) => i.id === b.dataset.id); if (!x) return;
+    const it = itemById(x.id);
+    if (b.dataset.a === 'p') { if (x.qty < it.stock) x.qty++; else toast(`保有台数は${it.stock}台です`); }
+    if (b.dataset.a === 'm' && x.qty > 1) x.qty--;
+    if (b.dataset.a === 'rm') cart.items = cart.items.filter((i) => i !== x);
+    saveCart();
+    if (!cart.items.length) return pgCart();
+    renderCart();
+  });
+  $('#p-msg').innerHTML = c.p.ok ? `<div class="msg msg-ok">${jpD(cart.start)} 〜 ${jpD(cart.end)}（${c.days}日間）</div>` : `<div class="msg msg-ng">${esc(c.p.msg)}</div>`;
+  $('#totals').innerHTML = `
+    <div class="row"><span>レンタル料金${c.p.ok ? `（${c.days}日間）` : ''}</span><span>${c.p.ok ? yen(c.sub) : '—'}</span></div>
+    <div class="row"><span>送料</span><span>${yen(c.ship)}</span></div>
+    <div class="row"><span>保証金 <small style="color:var(--muted)">返却・検品後に返金</small></span><span>${yen(c.dep)}</span></div>
+    <div class="row tot"><span>お支払い合計</span><b>${c.p.ok ? yen(c.total) : '—'}</b></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px">表示価格はすべて税込です。</div>`;
+  $('#cta-v').textContent = c.p.ok ? yen(c.total) : '—';
+  $('#go-info').disabled = !cartReady();
+}
+
+/* ───────── お客様情報 ───────── */
+const FIELDS = [
+  ['name', 'お名前', 'text', '山田 太郎', true, 'name'],
+  ['kana', 'フリガナ', 'text', 'ヤマダ タロウ', true, ''],
+  ['email', 'メールアドレス', 'email', 'example@mail.com', true, 'email'],
+  ['email2', 'メールアドレス（確認）', 'email', '', true, 'email'],
+  ['phone', '電話番号', 'tel', '090-1234-5678', true, 'tel'],
+  ['zip', '郵便番号', 'text', '1000001', true, 'postal-code'],
+  ['address', '住所', 'text', '都道府県・市区町村・番地・建物名', true, 'street-address'],
+];
+function guardCart() {
+  if (!cart.items.length || !periodInfo(cart.start, cart.end).ok) { location.hash = '#/cart'; return false; }
+  return true;
+}
+function pgInfo() {
+  if (!guardCart()) return;
+  const v = ssGet(CUST_KEY, {});
+  setApp(`${steps(2)}
+  <div class="ttl">お客様情報</div>
+  <div class="box">
+    ${FIELDS.map(([k, l, t, ph, req, ac]) => `<div class="fg"><label for="f-${k}">${l}${req ? '<em>必須</em>' : ''}</label>
+      <input class="inp" id="f-${k}" type="${t}" placeholder="${esc(ph)}" value="${esc(v[k] || '')}" ${ac ? `autocomplete="${ac}"` : ''} ${k === 'zip' ? 'inputmode="numeric" maxlength="8"' : ''}>
+      <div class="err-t" id="e-${k}"></div></div>`).join('')}
+    <div class="fg"><label for="f-note">備考</label><textarea class="inp" id="f-note" rows="3" placeholder="使用目的・ご要望など">${esc(v.note || '')}</textarea></div>
+    <div style="font-size:12px;color:var(--muted)">※ 本人確認のため、受取時に身分証の提示をお願いする場合があります。</div>
+  </div>`);
+  $('#f-zip').addEventListener('input', async (e) => {
+    const z = e.target.value.replace(/\D/g, '');
+    if (z.length !== 7 || $('#f-address').value.trim()) return;
+    try {
+      const r = await fetch('https://zipcloud.ibsnet.co.jp/api/search?zipcode=' + z);
+      const j = await r.json();
+      const a = j.results?.[0];
+      if (a && !$('#f-address').value.trim()) $('#f-address').value = a.address1 + a.address2 + a.address3;
+    } catch (err) { /* 住所の自動入力は任意 */ }
+  });
+  cta(`<button class="btn btn-ghost" onclick="location.hash='#/cart'">戻る</button><button class="btn btn-gold" style="flex:1" id="go-consent">利用規約の確認へ</button>`);
+  $('#go-consent').onclick = () => {
+    const d = {}; [...FIELDS.map((f) => f[0]), 'note'].forEach((k) => (d[k] = $('#f-' + k).value.trim()));
+    const errs = validateCust(d);
+    FIELDS.forEach(([k]) => { const e = $('#e-' + k); e.textContent = errs[k] || ''; e.classList.toggle('on', !!errs[k]); $('#f-' + k).classList.toggle('err', !!errs[k]); });
+    ssSet(CUST_KEY, d);
+    const firstErr = FIELDS.find(([k]) => errs[k]);
+    if (firstErr) { $('#f-' + firstErr[0]).focus(); toast('入力内容を確認してください', true); return; }
+    location.hash = '#/consent';
+  };
+}
+function validateCust(d) {
+  const e = {};
+  if (!d.name) e.name = 'お名前を入力してください'; else if (d.name.length > 60) e.name = '60文字以内で入力してください';
+  if (!d.kana) e.kana = 'フリガナを入力してください'; else if (d.kana.length > 60) e.kana = '60文字以内で入力してください';
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email || '')) e.email = 'メールアドレスが正しくありません';
+  if (d.email && (d.email2 || '').toLowerCase() !== d.email.toLowerCase()) e.email2 = '確認用のメールアドレスが一致しません';
+  const ph = (d.phone || '').replace(/\D/g, ''); if (ph.length < 10 || ph.length > 11) e.phone = '電話番号が正しくありません';
+  if ((d.zip || '').replace(/\D/g, '').length !== 7) e.zip = '郵便番号は7桁で入力してください';
+  if (!d.address) e.address = '住所を入力してください'; else if (d.address.length > 200) e.address = '200文字以内で入力してください';
+  if ((d.note || '').length > 1000) e.note = '備考は1000文字以内で入力してください';
+  return e;
+}
+
+/* ───────── 利用規約の確認・署名（ZELIの重要事項確認と同じ方式） ───────── */
+const CS = { terms: false, checks: [] };
+function importantItems() { return (S.settings.important_items || '').split('\n').map((t) => t.trim()).filter(Boolean); }
+function pgConsent() {
+  if (!guardCart()) return;
+  const cust = ssGet(CUST_KEY, null);
+  if (!cust || Object.keys(validateCust(cust)).length) { location.hash = '#/info'; return; }
+  const c = cartCalc();
+  const items = importantItems();
+  CS.terms = false; CS.checks = items.map(() => false);
+  const now = new Date().toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo' });
+  setApp(`${steps(3)}
+  <div class="ttl">利用規約の確認・署名</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:6px">ご予約の前に、必ずご本人が内容を確認し、チェックと署名をしてください。</div>
+  <div class="box"><div class="box-t">ご予約内容</div>
+    <div class="row"><span>ご利用期間</span><span>${jpD(cart.start)} 〜 ${jpD(cart.end)}（${c.days}日間）</span></div>
+    <div class="row"><span>受取方法</span><span>${cart.method === 'ship' ? '配送（往復）' : '店頭受取'}</span></div>
+    ${c.lines.map((l) => `<div class="row"><span>${esc(l.it.name)} × ${l.qty}</span><span>${yen(l.line)}</span></div>`).join('')}
+    <div class="row"><span>送料</span><span>${yen(c.ship)}</span></div>
+    <div class="row"><span>保証金</span><span>${yen(c.dep)}</span></div>
+    <div class="row tot"><span>お支払い合計</span><b>${yen(c.total)}</b></div>
+  </div>
+  <div class="box"><div class="box-t">📄 利用規約</div>
+    <div class="terms" id="terms">${esc(S.settings.terms_text || '')}</div>
+    <div class="terms-note" id="terms-note">↓ 最後までスクロールすると同意できます</div>
+    <label class="chk dis" id="chk-terms"><input type="checkbox" id="c-terms"><span>利用規約を最後まで読み、内容に同意します</span></label>
+  </div>
+  ${items.length ? `<div class="box"><div class="box-t">✅ 重要事項のご確認</div>
+    ${items.map((t, i) => `<label class="chk" data-i="${i}"><input type="checkbox" data-i="${i}"><span>${esc(t)}</span></label>`).join('')}</div>` : ''}
+  <div class="box"><div class="box-t">✍️ ご署名</div>
+    <div style="font-size:13px;color:#c8cfdd;line-height:1.6;margin:0 2px 10px">上記の内容をご確認・ご同意のうえ、下の枠内にご署名（フルネーム）をお願いいたします。</div>
+    <div class="sig-wrap"><canvas id="sig"></canvas></div>
+    <div class="sig-meta"><span>署名者：${esc(cust.name)} 様</span><span>${now}</span></div>
+    <button class="btn btn-ghost btn-block" style="margin-top:10px" id="sig-clear">🧹 署名を書き直す</button>
+  </div>`);
+  const tb = $('#terms');
+  const unlock = () => {
+    if (tb.scrollTop + tb.clientHeight >= tb.scrollHeight - 8) {
+      $('#chk-terms').classList.remove('dis'); $('#terms-note').textContent = '✓ 最後まで確認しました';
+      tb.removeEventListener('scroll', unlock);
+    }
+  };
+  tb.addEventListener('scroll', unlock, { passive: true }); unlock();
+  $('#c-terms').onchange = (e) => { CS.terms = e.target.checked; $('#chk-terms').classList.toggle('on', CS.terms); updConsentBtn(); };
+  document.querySelectorAll('label.chk[data-i] input').forEach((inp) => inp.onchange = () => {
+    const i = +inp.dataset.i; CS.checks[i] = inp.checked; inp.closest('label').classList.toggle('on', inp.checked); updConsentBtn();
+  });
+  $('#sig-clear').onclick = () => { initSigPad('sig'); updConsentBtn(); };
+  cta(`<button class="btn btn-ghost" onclick="location.hash='#/info'">戻る</button><button class="btn btn-gold" style="flex:1" id="confirm-btn" disabled>✅ 同意・署名して予約を確定</button>`);
+  $('#confirm-btn').onclick = submitOrder;
+  setTimeout(() => initSigPad('sig'), 60);
+}
+function updConsentBtn() {
+  const b = $('#confirm-btn'); if (!b) return;
+  b.disabled = !(CS.terms && CS.checks.every(Boolean) && sigPadDrawn('sig'));
+}
+
+/* 署名パッド（汎用） */
+const PADS = {};
+function initSigPad(id) {
+  const cv = document.getElementById(id); if (!cv) return;
+  const r = cv.getBoundingClientRect();
+  if (!r.width) { setTimeout(() => initSigPad(id), 80); return; }
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineWidth = 2.6; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#111';
+  const st = { len: 0, down: false, last: null, w: r.width };
+  PADS[id] = st;
+  const pos = (e) => { const b = cv.getBoundingClientRect(); return { x: e.clientX - b.left, y: e.clientY - b.top }; };
+  cv.onpointerdown = (e) => {
+    e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    st.down = true; st.last = pos(e);
+    ctx.beginPath(); ctx.arc(st.last.x, st.last.y, 1.2, 0, Math.PI * 2); ctx.fillStyle = '#111'; ctx.fill();
+  };
+  cv.onpointermove = (e) => {
+    if (!st.down) return; e.preventDefault();
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(st.last.x, st.last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    st.len += Math.hypot(p.x - st.last.x, p.y - st.last.y); st.last = p;
+  };
+  cv.onpointerup = cv.onpointercancel = cv.onpointerleave = () => { if (st.down) { st.down = false; updConsentBtn(); } };
+}
+function sigPadDrawn(id) { return !!PADS[id] && PADS[id].len > 60; }
+function sigDataURL(id) {
+  const cv = document.getElementById(id);
+  const w = Math.min(800, cv.width), h = Math.round(cv.height * w / cv.width);
+  const o = document.createElement('canvas'); o.width = w; o.height = h;
+  const c = o.getContext('2d'); c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); c.drawImage(cv, 0, 0, w, h);
+  return o.toDataURL('image/png');
+}
+let _resizeT;
+window.addEventListener('resize', () => {
+  clearTimeout(_resizeT);
+  _resizeT = setTimeout(() => {
+    const cv = $('#sig'); const st = PADS.sig;
+    if (cv && st && Math.abs(cv.getBoundingClientRect().width - st.w) > 2) { initSigPad('sig'); updConsentBtn(); toast('画面サイズが変わったため、署名をもう一度お願いします'); }
+  }, 250);
+});
+
+let _submitting = false;
+async function submitOrder() {
+  if (_submitting) return;
+  if (!(CS.terms && CS.checks.every(Boolean))) { toast('すべての項目にチェックしてください', true); return; }
+  if (!sigPadDrawn('sig')) { toast('枠内にご署名をお願いします', true); return; }
+  const cust = ssGet(CUST_KEY, {});
+  const btn = $('#confirm-btn');
+  _submitting = true; btn.disabled = true; btn.textContent = '予約を確定しています…';
+  try {
+    const { data, error } = await sb.rpc('place_order', {
+      p_customer: { name: cust.name, kana: cust.kana, email: cust.email, phone: cust.phone, zip: cust.zip, address: cust.address, note: cust.note || '' },
+      p_items: cart.items.map((x) => ({ id: x.id, qty: x.qty })),
+      p_rental: { start: cart.start, end: cart.end, method: cart.method },
+      p_consent: { terms_agreed: 'true', checked: CS.checks, signature: sigDataURL('sig'), ua: navigator.userAgent },
+    });
+    if (error) throw error;
+    // 確認メール（失敗しても予約は確定済み）
+    sb.functions.invoke('send-mail', { body: { type: 'order', order_id: data.id, token: data.token } })
+      .then(({ error: e }) => { if (e) console.warn('mail', e); }).catch((e) => console.warn('mail', e));
+    ssSet(DONE_KEY, { order_number: data.order_number, total: data.total, start: cart.start, end: cart.end, method: cart.method, email: cust.email });
+    cart = { items: [], start: '', end: '', method: cart.method }; saveCart();
+    try { sessionStorage.removeItem(CUST_KEY); } catch (e) {}
+    S.cal = {};
+    location.hash = '#/done';
+  } catch (e) {
+    console.error(e);
+    toast(e.message || '予約できませんでした', true);
+    btn.textContent = '✅ 同意・署名して予約を確定'; updConsentBtn();
+  } finally { _submitting = false; }
+}
+
+/* ───────── 完了 ───────── */
+function pgDone() {
+  const d = ssGet(DONE_KEY, null);
+  if (!d) { location.hash = '#/'; return; }
+  const days = setI('auto_cancel_days', 0);
+  setApp(`${steps(4)}
+  <div class="done">
+    <div class="mk"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="ttl">ご予約ありがとうございます</div>
+    <div style="color:var(--muted);font-size:13px">予約番号</div>
+    <div class="onum">${esc(d.order_number)}</div>
+    <div style="font-size:13px;color:#c8cfdd;margin-top:6px">${esc(d.email)} に確認メールをお送りしました。</div>
+  </div>
+  <div class="box">
+    <div class="row"><span>ご利用期間</span><span>${jpD(d.start)} 〜 ${jpD(d.end)}</span></div>
+    <div class="row"><span>受取方法</span><span>${d.method === 'ship' ? '配送（往復）' : '店頭受取'}</span></div>
+    <div class="row tot"><span>お支払い合計</span><b>${yen(d.total)}</b></div>
+  </div>
+  <div class="box"><div class="box-t">お支払い（銀行振込）</div>
+    <div class="pre" style="background:#0a0f1f;border:1px solid var(--line2);border-radius:10px;padding:12px">${esc(S.settings.bank_info || '')}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:8px">振込名義の前に予約番号の数字（${esc(String(d.order_number).replace(/\D/g, '').slice(-6))}）をご入力ください。${days > 0 ? `<br>${days}日以内にご入金が確認できない場合、ご予約は自動でキャンセルされます。` : ''}</div>
+  </div>
+  <div style="text-align:center;margin-top:24px"><a class="btn btn-ghost" href="#/">トップへ戻る</a></div>`);
+}
+
+/* ───────── 利用規約ページ ───────── */
+function pgTerms() {
+  const items = importantItems();
+  setApp(`<button class="back" onclick="location.hash='#/'">‹ トップへ</button>
+  <div class="ttl">利用規約</div>
+  <div class="box"><div class="pre">${esc(S.settings.terms_text || '')}</div></div>
+  ${items.length ? `<div class="box"><div class="box-t">ご予約時に確認いただく事項</div><ul style="padding-left:20px;font-size:14px;color:#c8cfdd">${items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}`);
+}
+
+boot();
+</script>
+</body>
+</html>
