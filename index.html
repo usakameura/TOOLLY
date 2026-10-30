@@ -3,226 +3,238 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>TOOL RENTAL｜プロの工具レンタル</title>
-<meta name="description" content="プロ仕様の電動工具・測定器を、必要な日だけレンタル。Webで予約・利用規約の同意と署名まで完結。">
-<meta name="theme-color" content="#080c18">
+<title>toolly｜工具レンタル</title>
+<meta name="description" content="つくる時間を、もっと気軽に。必要な道具を、必要な日だけレンタル。Webで予約・利用規約の同意と署名まで完結。">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#fbfaf6">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{
-  --bg:#080c18;--bg2:#0d1324;--card:#10172c;--card2:#141d36;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.14);
-  --text:#e9edf6;--muted:#8d96ab;--gold:#f5a800;--gold2:#ffc94d;--ok:#22c55e;--ng:#ef4444;--warn:#f59e0b;
-  --hd:60px;--r:14px;
+  --bg:#fbfaf6;--card:#ffffff;--soft:#f3f2ec;--sage:#e7eeeb;--wood:#d8c9b0;
+  --line:rgba(38,58,66,.09);--line2:rgba(38,58,66,.17);
+  --text:#263a42;--text2:#4b5f66;--muted:#637578;
+  --teal:#3f5d6a;--teal2:#547584;--teal-l:#e4eded;--teal-ll:#f1f5f4;
+  --coral:#e28b63;--coral-d:#b5532c;--coral-l:#fbe8dd;
+  --ok:#2f7a55;--ok-l:#e6f2eb;--ng:#b42318;--ng-l:#fdecea;--warn:#a15c07;
+  --shadow:0 1px 2px rgba(38,58,66,.05),0 8px 24px rgba(53,73,80,.07);
+  --shadow2:0 2px 4px rgba(38,58,66,.06),0 18px 40px rgba(53,73,80,.12);
+  --hd:62px;--r:18px;
+  --sans:'Inter','Noto Sans JP',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:15px;line-height:1.7;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.75;min-height:100vh;overflow-x:hidden;font-feature-settings:"palt" 1}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
-  background-size:44px 44px;mask-image:linear-gradient(to bottom,#000 0%,transparent 75%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 75%)}
-body::after{content:"";position:fixed;top:-25vh;left:50%;width:120vw;height:70vh;transform:translateX(-50%);pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at center,rgba(245,168,0,.16),transparent 60%)}
+  background:repeating-linear-gradient(0deg,rgba(88,107,101,.03) 0 1px,transparent 1px 43px)}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer}
 input,textarea,select{font-family:inherit;font-size:16px}
 img{max-width:100%;display:block}
-.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:.04em;font-weight:400}
+.num{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 
 /* header */
-.hd{position:sticky;top:0;z-index:50;height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 16px;
-  background:rgba(8,12,24,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{position:sticky;top:0;z-index:50;height:var(--hd);display:flex;align-items:center;justify-content:space-between;padding:0 18px;
+  background:rgba(251,250,246,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--gold);display:grid;place-items:center;color:#080c18}
-.logo-txt{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.08em;line-height:1}
-.cart-btn{position:relative;display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--line2);color:var(--text);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
-.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:var(--gold);color:#080c18;font-size:11px;font-weight:900;display:none;place-items:center;padding:0 5px}
+.logo-mark{width:30px;height:30px;flex-shrink:0}
+.logo-txt{font-family:'Inter',sans-serif;font-size:23px;font-weight:800;letter-spacing:.06em;line-height:1;color:#263c46;position:relative;padding-right:10px}
+.logo-txt::after{content:"";position:absolute;right:0;top:0;width:6px;height:6px;border-radius:50%;background:var(--coral)}
+.logo-sub{font-size:10px;letter-spacing:.18em;color:#859795;font-weight:600;margin-left:6px}
+.cart-btn{position:relative;display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line2);color:var(--text);border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;border-radius:10px;background:var(--coral-d);color:#fff;font-size:11px;font-weight:800;display:none;place-items:center;padding:0 5px}
 .badge.on{display:grid}
 
-main{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 16px 120px;min-height:70vh}
+main{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 18px 120px;min-height:70vh}
 .page{animation:fadeUp .45s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 .fu{opacity:0;animation:fadeUp .6s ease forwards}
 
-/* hero */
-.hero{padding:56px 0 36px;text-align:left}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.14em;border:1px solid rgba(245,168,0,.35);border-radius:999px;padding:5px 12px;background:rgba(245,168,0,.06)}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:clamp(64px,15vw,132px);line-height:.88;letter-spacing:.02em;margin:18px 0 14px}
-.hero h1 em{font-style:normal;color:var(--gold)}
-.hero p{color:#c4cbdb;font-size:16px;max-width:520px}
-.hero-cta{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:14px 22px;font-weight:800;font-size:15px;transition:transform .12s,opacity .15s,background .15s}
+/* hero（ヘッダー画像と同じ構図） */
+.hero{position:relative;margin:18px 0 26px;border-radius:26px;overflow:hidden;display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:stretch;
+  background:linear-gradient(135deg,#fbfaf6 0%,#f2f2eb 55%,#e7eeeb 100%);border:1px solid var(--line);box-shadow:var(--shadow)}
+.hero-copy{padding:56px 0 52px 52px;position:relative;z-index:1}
+.hero-tag{font-size:11px;letter-spacing:.22em;color:#859795;font-weight:600}
+.hero h1{font-size:clamp(34px,4.6vw,54px);font-weight:800;line-height:1.28;letter-spacing:-.02em;color:#263a42;margin:18px 0 0}
+.hero .rule{width:60px;height:3px;border-radius:2px;background:var(--coral);margin:26px 0 22px}
+.hero p{color:var(--muted);font-size:17px;line-height:1.85}
+.hero-cta{display:flex;gap:10px;margin-top:30px;flex-wrap:wrap}
+.hero-art{position:relative;min-height:100%}
+.hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:left bottom}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:14px 26px;font-weight:700;font-size:15px;transition:transform .12s,opacity .15s,background .15s,box-shadow .15s}
 .btn:active{transform:scale(.98)}
-.btn-gold{background:var(--gold);color:#080c18}
-.btn-gold:hover{background:var(--gold2)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.btn-gold{background:var(--teal);color:#fff;box-shadow:0 6px 18px rgba(63,93,106,.28)}
+.btn-gold:hover{background:#355260}
+.btn-ghost{background:#fff;color:var(--text);border:1px solid var(--line2)}
 .btn-block{width:100%}
-.btn[disabled]{opacity:.35;pointer-events:none}
+.btn[disabled]{opacity:.38;pointer-events:none;box-shadow:none}
 
-.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 40px}
-.feat{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:18px}
-.feat b{display:block;font-size:15px;margin:8px 0 4px}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 44px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.feat b{display:block;font-size:15px;margin:12px 0 4px}
 .feat span{font-size:13px;color:var(--muted)}
-.feat .ic{width:36px;height:36px;border-radius:10px;background:rgba(245,168,0,.12);color:var(--gold);display:grid;place-items:center}
+.feat .ic{width:42px;height:42px;border-radius:13px;background:var(--coral-l);color:var(--coral-d);display:grid;place-items:center}
 
-.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:34px 0 14px}
-.sec-h h2{font-family:'Bebas Neue',sans-serif;font-weight:400;font-size:40px;line-height:1;letter-spacing:.04em}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:40px 0 16px}
+.sec-h .en{display:block;font-size:11px;letter-spacing:.22em;color:var(--coral-d);font-weight:700}
+.sec-h h2{font-size:24px;font-weight:800;line-height:1.35;letter-spacing:-.01em;color:#263a42;margin-top:4px}
 .sec-h small{color:var(--muted);font-size:12px}
 
 .flow{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;counter-reset:f}
-.flow div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 10px;text-align:center;font-size:13px;font-weight:700;position:relative}
-.flow div::before{counter-increment:f;content:counter(f,decimal-leading-zero);display:block;font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;margin-bottom:6px;font-weight:400}
+.flow div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 10px;text-align:center;font-size:13px;font-weight:700;box-shadow:var(--shadow)}
+.flow div::before{counter-increment:f;content:counter(f,decimal-leading-zero);display:block;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--coral-d);margin-bottom:6px}
 
 /* filters */
-.tools{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;position:sticky;top:var(--hd);z-index:10;background:linear-gradient(var(--bg) 80%,transparent);padding:10px 0 12px}
-.search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:0 12px}
+.tools{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;position:sticky;top:var(--hd);z-index:10;background:linear-gradient(var(--bg) 82%,rgba(251,250,246,0));padding:10px 0 12px}
+.search{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line2);border-radius:999px;padding:0 16px;box-shadow:var(--shadow)}
 .search input{flex:1;background:transparent;border:none;color:var(--text);padding:12px 0;outline:none}
 .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex-shrink:0;border:1px solid var(--line2);background:transparent;color:var(--muted);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:700}
-.chip.on{background:var(--gold);color:#080c18;border-color:var(--gold)}
+.chip{flex-shrink:0;border:1px solid var(--line2);background:#fff;color:var(--text2);border-radius:999px;padding:7px 15px;font-size:13px;font-weight:700}
+.chip.on{background:var(--teal);color:#fff;border-color:var(--teal)}
 
 /* grid */
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,border-color .2s}
-.card:hover{transform:translateY(-3px);border-color:rgba(245,168,0,.4)}
-.thumb{aspect-ratio:1/1;background:linear-gradient(135deg,#141c35,#0b1123);position:relative;overflow:hidden}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow2)}
+.thumb{aspect-ratio:1/1;background:linear-gradient(160deg,#f3f2ec,#e7eeeb);position:relative;overflow:hidden}
 .thumb img{width:100%;height:100%;object-fit:cover}
-.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:rgba(245,168,0,.45)}
-.tag{position:absolute;top:8px;left:8px;font-size:10px;font-weight:900;letter-spacing:.08em;padding:3px 8px;border-radius:6px}
-.tag-sale{background:var(--ng);color:#fff}
-.card-b{padding:12px;display:flex;flex-direction:column;gap:4px;flex:1}
-.card-cat{font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.06em}
-.card-n{font-weight:700;font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-p{margin-top:auto;padding-top:6px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
-.card-p b{font-family:'Bebas Neue',sans-serif;font-size:26px;font-weight:400;line-height:1;color:var(--gold)}
+.thumb .ph{position:absolute;inset:0;display:grid;place-items:center;color:rgba(84,117,132,.4)}
+.tag{position:absolute;top:10px;left:10px;font-size:10px;font-weight:800;letter-spacing:.1em;padding:3px 9px;border-radius:999px}
+.tag-sale{background:var(--coral-d);color:#fff}
+.card-b{padding:13px 14px 15px;display:flex;flex-direction:column;gap:3px;flex:1}
+.card-cat{font-size:11px;color:var(--coral-d);font-weight:700;letter-spacing:.08em}
+.card-n{font-weight:700;font-size:14px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-p{margin-top:auto;padding-top:8px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.card-p b{font-family:'Inter',sans-serif;font-size:21px;font-weight:800;letter-spacing:-.02em;line-height:1;color:#263a42}
 .card-p s{color:var(--muted);font-size:12px}
 .card-p span{font-size:11px;color:var(--muted)}
 .empty{padding:50px 10px;text-align:center;color:var(--muted)}
 
 /* detail */
 .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;margin:18px 0 12px;background:none;border:none}
-.dt{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:start}
-.gal{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#0b1123}
+.dt{display:grid;grid-template-columns:1.05fr 1fr;gap:30px;align-items:start}
+.gal{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:linear-gradient(160deg,#f3f2ec,#e7eeeb);box-shadow:var(--shadow)}
 .gal-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .gal-track::-webkit-scrollbar{display:none}
-.gal-track>div{flex:0 0 100%;aspect-ratio:1/1;scroll-snap-align:start;display:grid;place-items:center;color:rgba(245,168,0,.4)}
+.gal-track>div{flex:0 0 100%;aspect-ratio:1/1;scroll-snap-align:start;display:grid;place-items:center;color:rgba(84,117,132,.4)}
 .gal-track img{width:100%;height:100%;object-fit:cover}
 .dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px}
-.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35)}
-.dots i.on{background:var(--gold)}
-.dt h1{font-size:22px;line-height:1.45;margin:6px 0 4px}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(38,58,66,.22)}
+.dots i.on{background:var(--coral)}
+.dt h1{font-size:23px;font-weight:800;line-height:1.45;margin:6px 0 4px;letter-spacing:-.01em}
 .dt .sub{color:var(--muted);font-size:13px}
-.price-tbl{margin:16px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.price-tbl div{display:flex;justify-content:space-between;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.price-tbl{margin:16px 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+.price-tbl div{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
 .price-tbl div:last-child{border-bottom:none}
-.price-tbl b{font-family:'Bebas Neue',sans-serif;font-size:24px;font-weight:400;color:var(--gold);letter-spacing:.03em}
+.price-tbl b{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:#263a42;letter-spacing:-.02em}
 .price-tbl s{color:var(--muted);font-size:13px;margin-right:6px}
-.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-top:14px}
-.box-t{font-weight:900;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.box-t::before{content:"";width:4px;height:16px;background:var(--gold);border-radius:2px}
-.pre{white-space:pre-wrap;font-size:14px;color:#c8cfdd}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:14px;box-shadow:var(--shadow)}
+.box-t{font-weight:800;font-size:14px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.box-t::before{content:"";width:18px;height:3px;background:var(--coral);border-radius:2px}
+.pre{white-space:pre-wrap;font-size:14px;color:var(--text2)}
+.pre-box{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 
 /* calendar */
 .cal-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .cal-h b{font-size:15px}
-.cal-nav{width:36px;height:36px;border-radius:10px;border:1px solid var(--line2);background:transparent;color:var(--text);font-size:18px}
+.cal-nav{width:36px;height:36px;border-radius:50%;border:1px solid var(--line2);background:#fff;color:var(--text);font-size:18px}
 .cal-nav[disabled]{opacity:.25}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .cal .wd{text-align:center;font-size:11px;color:var(--muted);padding:2px 0}
-.cal .wd:first-child{color:#f87171}.cal .wd:last-child{color:#60a5fa}
-.cd{aspect-ratio:1/1;border-radius:9px;border:1px solid transparent;background:rgba(255,255,255,.03);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;line-height:1.1;padding:0}
-.cd small{font-size:10px;margin-top:2px}
+.cal .wd:first-child{color:var(--coral-d)}.cal .wd:last-child{color:var(--teal2)}
+.cd{aspect-ratio:1/1;border-radius:10px;border:1px solid transparent;background:var(--teal-ll);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;line-height:1.1;padding:0;font-family:'Inter',sans-serif}
+.cd small{font-size:10px;margin-top:2px;font-weight:800}
 .cd.ok small{color:var(--ok)}.cd.few small{color:var(--warn)}.cd.ng small{color:var(--ng)}
-.cd.ng{opacity:.55}
-.cd.off{opacity:.18;pointer-events:none;background:transparent}
+.cd.ng{opacity:.5}
+.cd.off{opacity:.3;pointer-events:none;background:transparent}
 .cd.blank{visibility:hidden}
-.cd.in{background:rgba(245,168,0,.18);border-color:rgba(245,168,0,.3)}
-.cd.edge{background:var(--gold);color:#080c18;font-weight:900}
-.cd.edge small{color:#080c18}
-.cd.buf{background:repeating-linear-gradient(135deg,rgba(245,168,0,.08) 0 4px,transparent 4px 8px)}
+.cd.in{background:var(--teal-l);border-color:#c9dadb}
+.cd.edge{background:var(--teal);color:#fff;font-weight:800;box-shadow:0 3px 10px rgba(63,93,106,.35)}
+.cd.edge small{color:#fff}
+.cd.buf{background:repeating-linear-gradient(135deg,rgba(226,139,99,.22) 0 4px,var(--teal-ll) 4px 8px)}
 .cal-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-top:10px}
-.msg{font-size:13px;padding:10px 12px;border-radius:10px;margin-top:10px}
-.msg-ok{background:rgba(34,197,94,.1);color:#86efac;border:1px solid rgba(34,197,94,.25)}
-.msg-ng{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
-.msg-info{background:rgba(245,168,0,.08);color:#fcd58a;border:1px solid rgba(245,168,0,.25)}
+.msg{font-size:13px;padding:10px 14px;border-radius:12px;margin-top:10px}
+.msg-ok{background:var(--ok-l);color:#1f5c3f;border:1px solid #c5e1d1}
+.msg-ng{background:var(--ng-l);color:#8a1c12;border:1px solid #f6c9c3}
+.msg-info{background:var(--coral-l);color:#7c3a1d;border:1px solid #f5d0bc}
 
-.qty{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line2);border-radius:999px;overflow:hidden;background:#fff}
 .qty button{width:40px;height:40px;background:transparent;border:none;color:var(--text);font-size:18px}
-.qty span{min-width:36px;text-align:center;font-weight:800}
-.est{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px}
-.est b{font-family:'Bebas Neue',sans-serif;font-size:34px;font-weight:400;color:var(--gold);line-height:1}
+.qty span{min-width:30px;text-align:center;font-weight:800;font-family:'Inter',sans-serif}
+.est{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
+.est b{font-family:'Inter',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.02em;color:#263a42;line-height:1}
 
-.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(8,12,24,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line)}
-.sticky-cta .in{max-width:1080px;margin:0 auto;display:flex;gap:12px;align-items:center}
+.sticky-cta{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);box-shadow:0 -6px 22px rgba(53,73,80,.07)}
+.sticky-cta .in{max-width:1120px;margin:0 auto;display:flex;gap:12px;align-items:center}
 .sticky-cta .sum{flex:1;min-width:0}
 .sticky-cta .sum small{display:block;font-size:11px;color:var(--muted)}
-.sticky-cta .sum b{font-family:'Bebas Neue',sans-serif;font-size:28px;font-weight:400;color:var(--gold);line-height:1}
+.sticky-cta .sum b{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;letter-spacing:-.02em;color:#263a42;line-height:1.1}
 
 /* steps */
 .steps{display:flex;gap:6px;margin:22px 0 18px}
 .steps div{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
-.steps div i{display:block;height:4px;border-radius:2px;background:var(--line2);margin-bottom:6px}
-.steps div.on{color:var(--gold)}.steps div.on i{background:var(--gold)}
-.steps div.done i{background:rgba(245,168,0,.45)}
-.ttl{font-size:20px;font-weight:900;margin-bottom:6px}
+.steps div i{display:block;height:4px;border-radius:2px;background:rgba(38,58,66,.1);margin-bottom:6px}
+.steps div.on{color:var(--teal)}.steps div.on i{background:var(--teal)}
+.steps div.done i{background:#9fb6bd}
+.ttl{font-size:21px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
 
 .line{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .line:last-child{border-bottom:none}
-.line .im{width:64px;height:64px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#0b1123;display:grid;place-items:center;color:rgba(245,168,0,.4)}
+.line .im{width:64px;height:64px;border-radius:12px;overflow:hidden;flex-shrink:0;background:linear-gradient(160deg,#f3f2ec,#e7eeeb);display:grid;place-items:center;color:rgba(84,117,132,.4)}
 .line .im img{width:100%;height:100%;object-fit:cover}
 .line .nm{font-weight:700;font-size:14px;line-height:1.4}
 .line .meta{font-size:12px;color:var(--muted)}
 .line .rm{background:none;border:none;color:var(--muted);font-size:12px;text-decoration:underline}
-.ok-tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
-.ok-tag.y{background:rgba(34,197,94,.14);color:#86efac}.ok-tag.n{background:rgba(239,68,68,.14);color:#fca5a5}
+.ok-tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;display:inline-block;margin-top:4px;background:var(--soft);color:var(--muted)}
+.ok-tag.y{background:var(--ok-l);color:#1f5c3f}.ok-tag.n{background:var(--ng-l);color:#8a1c12}
 
-.row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
-.row.tot{border-top:1px solid var(--line2);margin-top:6px;padding-top:12px;font-weight:900}
-.row.tot b{font-family:'Bebas Neue',sans-serif;font-size:30px;font-weight:400;color:var(--gold);line-height:1}
-
-.radio{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1.5px solid var(--line2);border-radius:12px;margin-bottom:8px;cursor:pointer}
-.radio input{width:20px;height:20px;accent-color:var(--gold);margin-top:2px;flex-shrink:0}
-.radio.on{border-color:var(--gold);background:rgba(245,168,0,.06)}
-.radio small{display:block;color:var(--muted);font-size:12px}
+.row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:14px}
+.row.tot{border-top:1px solid var(--line2);margin-top:6px;padding-top:12px;font-weight:800}
+.row.tot b{font-family:'Inter',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.02em;color:#263a42;line-height:1}
+.ship-note{display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text2)}
+.ship-note .ic{width:40px;height:40px;border-radius:12px;background:var(--coral-l);color:var(--coral-d);display:grid;place-items:center;flex-shrink:0}
 
 .fg{margin-bottom:14px}
 .fg label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}
-.fg label em{font-style:normal;color:var(--ng);font-size:11px;margin-left:6px}
-.inp{width:100%;background:var(--bg2);border:1.5px solid var(--line2);border-radius:10px;color:var(--text);padding:12px 14px;outline:none;transition:border-color .15s}
-.inp:focus{border-color:var(--gold)}
+.fg label em{font-style:normal;color:var(--coral-d);font-size:11px;margin-left:6px}
+.inp{width:100%;background:#fff;border:1.5px solid var(--line2);border-radius:12px;color:var(--text);padding:12px 14px;outline:none;transition:border-color .15s,box-shadow .15s}
+.inp:focus{border-color:var(--teal2);box-shadow:0 0 0 3px rgba(84,117,132,.16)}
 .inp.err{border-color:var(--ng)}
-.err-t{color:#fca5a5;font-size:12px;margin-top:4px;display:none}
+.err-t{color:var(--ng);font-size:12px;margin-top:4px;display:none}
 .err-t.on{display:block}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dates{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
-input[type=date].inp{color-scheme:dark}
+input[type=date].inp{color-scheme:light}
 
 /* consent (ZELI方式) */
-.terms{max-height:280px;overflow-y:auto;background:#0a0f1f;border:1px solid var(--line2);border-radius:12px;padding:16px;font-size:13px;line-height:1.85;white-space:pre-wrap;color:#cfd5e2}
+.terms{max-height:280px;overflow-y:auto;background:var(--soft);border:1px solid var(--line2);border-radius:14px;padding:16px;font-size:13px;line-height:1.9;white-space:pre-wrap;color:var(--text2)}
 .terms-note{font-size:12px;color:var(--muted);margin:8px 2px}
-.chk{display:flex;gap:12px;align-items:flex-start;padding:15px 14px;border:1.5px solid var(--line2);border-radius:12px;margin-bottom:10px;cursor:pointer;background:var(--bg2);transition:border-color .15s,background .15s}
-.chk input{width:22px;height:22px;flex-shrink:0;accent-color:var(--ok);cursor:pointer;margin-top:1px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:15px 14px;border:1.5px solid var(--line2);border-radius:14px;margin-bottom:10px;cursor:pointer;background:#fff;transition:border-color .15s,background .15s}
+.chk input{width:22px;height:22px;flex-shrink:0;accent-color:var(--teal);cursor:pointer;margin-top:1px}
 .chk span{font-size:15px;line-height:1.65;font-weight:600}
-.chk.on{border-color:rgba(34,197,94,.55);background:rgba(34,197,94,.06)}
+.chk.on{border-color:#9fb6bd;background:var(--teal-ll)}
 .chk.dis{opacity:.45;pointer-events:none}
-.sig-wrap{border:2px dashed rgba(245,168,0,.45);border-radius:14px;background:#fff;padding:6px}
+.sig-wrap{border:2px dashed #e9b497;border-radius:16px;background:#fff;padding:6px}
 .sig-wrap canvas{width:100%;height:200px;display:block;touch-action:none;border-radius:10px;background:#fff;cursor:crosshair}
 .sig-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin:8px 4px 0}
 
 .done{text-align:center;padding:30px 0}
-.done .mk{width:76px;height:76px;border-radius:50%;margin:0 auto 16px;background:rgba(245,168,0,.12);border:2px solid var(--gold);display:grid;place-items:center;color:var(--gold);animation:pop .5s ease both}
+.done .mk{width:76px;height:76px;border-radius:50%;margin:0 auto 16px;background:var(--teal);display:grid;place-items:center;color:#fff;box-shadow:0 10px 26px rgba(63,93,106,.35);animation:pop .5s ease both}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
-.onum{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.06em;color:var(--gold)}
+.onum{font-family:'Inter',sans-serif;font-size:28px;font-weight:800;letter-spacing:.04em;color:#263a42}
 
-.ft{position:relative;z-index:1;border-top:1px solid var(--line);padding:28px 16px 40px;text-align:center;color:var(--muted);font-size:12px}
+.ft{position:relative;z-index:1;border-top:1px solid var(--line);padding:30px 16px 44px;text-align:center;color:var(--muted);font-size:12px;background:var(--sage)}
 .ft a{margin:0 10px;text-decoration:underline}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;background:#1d2642;color:var(--text);border:1px solid var(--line2);padding:12px 18px;border-radius:12px;font-size:14px;z-index:100;transition:.25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none}
+.ft .ft-logo{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);opacity:0;background:#263a42;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;z-index:100;transition:.25s;max-width:calc(100% - 32px);text-align:center;pointer-events:none;box-shadow:var(--shadow2)}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.err{border-color:rgba(239,68,68,.5);color:#fecaca}
+.toast.err{background:var(--ng)}
 .loading{padding:60px 0;text-align:center;color:var(--muted)}
-.spin{width:28px;height:28px;border:3px solid var(--line2);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 10px}
+.spin{width:28px;height:28px;border:3px solid rgba(38,58,66,.1);border-top-color:var(--teal);border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 10px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 @media (max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
@@ -232,16 +244,21 @@ input[type=date].inp{color-scheme:dark}
   .feats{grid-template-columns:1fr}
   .flow{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
   .flow div{padding:10px 4px;font-size:11px}
-  .flow div::before{font-size:20px}
-  .hero{padding:40px 0 26px}
+  .hero{grid-template-columns:1fr;margin-top:12px;border-radius:22px}
+  .hero-copy{padding:34px 24px 6px}
+  .hero h1{font-size:34px}
+  .hero p{font-size:15px}
+  .hero-art{aspect-ratio:960/620;min-height:0}
+  .hero-art img{object-position:center bottom}
+  .logo-sub{display:none}
 }
 </style>
 </head>
 <body>
 <header class="hd">
   <a href="#/" class="logo">
-    <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span>
-    <span class="logo-txt" id="store-name">TOOL RENTAL</span>
+    <svg class="logo-mark" viewBox="0 6 42 30" aria-hidden="true"><path d="M2 8h25l13 13-13 13H2z" fill="#547584"/><path d="M13 8v26" stroke="#f8f7f0" stroke-width="4"/></svg>
+    <span class="logo-txt" id="store-name">toolly</span><span class="logo-sub">TOOLS, WHEN YOU NEED THEM</span>
   </a>
   <a href="#/cart" class="cart-btn" aria-label="カート">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
@@ -253,8 +270,9 @@ input[type=date].inp{color-scheme:dark}
 <div id="cta-slot"></div>
 
 <footer class="ft">
+  <div class="ft-logo"><img src="/assets/favicon.svg" alt="" width="28" height="28"></div>
   <div><a href="#/terms">利用規約</a><a href="#" id="contact-link">お問い合わせ</a></div>
-  <div style="margin-top:10px" id="ft-copy">© TOOL RENTAL</div>
+  <div style="margin-top:10px" id="ft-copy">© toolly</div>
 </footer>
 <div class="toast" id="toast"></div>
 
@@ -311,7 +329,6 @@ function loadCart() {
   return {
     items: Array.isArray(c.items) ? c.items.filter((x) => x && typeof x.id === 'string' && Number.isInteger(x.qty) && x.qty > 0).slice(0, 20) : [],
     start: isDate(c.start) ? c.start : '', end: isDate(c.end) ? c.end : '',
-    method: c.method === 'pickup' ? 'pickup' : 'ship',
   };
 }
 let cart = loadCart();
@@ -341,7 +358,7 @@ function cartCalc() {
   const days = p.ok ? p.days : 1;
   let sub = 0, dep = 0;
   const lines = cart.items.map((x) => { const it = itemById(x.id); const c = lineCalc(it, x.qty, days); sub += c.line; dep += c.dep; return { ...x, it, ...c }; });
-  const ship = cart.method === 'ship' && cart.items.length ? setI('shipping_fee', 0) : 0;
+  const ship = cart.items.length ? setI('shipping_fee', 0) : 0;
   return { p, days, lines, sub, dep, ship, total: sub + dep + ship };
 }
 
@@ -387,7 +404,7 @@ async function boot() {
     $('#app').innerHTML = `<div class="empty">データを読み込めませんでした。<br><small>${esc(e.message || e)}</small></div>`;
     return;
   }
-  const name = S.settings.store_name || 'TOOL RENTAL';
+  const name = S.settings.store_name || 'toolly';
   $('#store-name').textContent = name;
   $('#ft-copy').textContent = '© ' + name;
   document.title = name + '｜' + (S.settings.store_tagline || '工具レンタル');
@@ -445,21 +462,25 @@ function pgHome() {
   const usedCats = S.cats.filter((c) => S.items.some((i) => i.category_id === c.id));
   setApp(`
   <section class="hero">
-    <div class="eyebrow fu">● PRO TOOL RENTAL</div>
-    <h1 class="fu" style="animation-delay:.08s">RENT THE<br><em>PRO TOOLS.</em></h1>
-    <p class="fu" style="animation-delay:.16s">${esc(s.store_tagline || '')}<br>買うほどじゃない、でもプロ仕様を使いたい。そんな日のための工具レンタル。</p>
-    <div class="hero-cta fu" style="animation-delay:.24s"><a href="#list" class="btn btn-gold">工具をさがす</a><a href="#/terms" class="btn btn-ghost">利用規約</a></div>
+    <div class="hero-copy">
+      <div class="hero-tag fu">TOOLS, WHEN YOU NEED THEM</div>
+      <h1 class="fu" style="animation-delay:.08s">つくる時間を、<br>もっと気軽に。</h1>
+      <div class="rule fu" style="animation-delay:.14s"></div>
+      <p class="fu" style="animation-delay:.18s">${esc(s.store_tagline || '必要な道具を、必要な日だけ。')}<br>はじめてのDIYから、いつもの現場まで。</p>
+      <div class="hero-cta fu" style="animation-delay:.24s"><a href="#list" class="btn btn-gold">道具をさがす</a><a href="#/terms" class="btn btn-ghost">利用規約</a></div>
+    </div>
+    <div class="hero-art"><img src="/assets/hero-art.svg" alt="ドリルや工具箱が並ぶ作業台のイラスト" width="960" height="700"></div>
   </section>
   <div class="feats">
     <div class="feat fu" style="animation-delay:.3s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div><b>必要な日だけ</b><span>1日から。空き状況はカレンダーでひと目で確認。</span></div>
-    <div class="feat fu" style="animation-delay:.36s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><b>配送・店頭受取</b><span>往復配送か店頭受取を選べます。</span></div>
+    <div class="feat fu" style="animation-delay:.36s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><b>往復配送</b><span>利用開始日までにお届け。返却は同梱の伝票で送るだけ。</span></div>
     <div class="feat fu" style="animation-delay:.42s"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div><b>Webで同意・署名</b><span>利用規約の確認と署名までスマホで完結。</span></div>
   </div>
-  <div class="sec-h"><h2>HOW IT WORKS</h2><small>ご利用の流れ</small></div>
-  <div class="flow"><div>工具を選ぶ</div><div>期間を選ぶ</div><div>規約に同意・署名</div><div>受け取る</div><div>返却する</div></div>
-  <div class="sec-h" id="list"><h2>TOOLS</h2><small>${S.items.length}点</small></div>
+  <div class="sec-h"><div><span class="en">HOW IT WORKS</span><h2>ご利用の流れ</h2></div></div>
+  <div class="flow"><div>工具を選ぶ</div><div>期間を選ぶ</div><div>規約に同意・署名</div><div>お届け</div><div>発送で返却</div></div>
+  <div class="sec-h" id="list"><div><span class="en">TOOLS</span><h2>道具をさがす</h2></div><small>${S.items.length}点</small></div>
   <div class="tools">
-    <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8d96ab" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="q" type="search" placeholder="工具名・メーカーで検索" value="${esc(S.q)}"></div>
+    <div class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#637578" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="q" type="search" placeholder="工具名・メーカーで検索" value="${esc(S.q)}"></div>
     ${usedCats.length ? `<div class="chips"><button class="chip ${S.cat ? '' : 'on'}" data-cat="">すべて</button>${usedCats.map((c) => `<button class="chip ${S.cat === c.id ? 'on' : ''}" data-cat="${c.id}">${esc(c.name)}</button>`).join('')}</div>` : ''}
   </div>
   <div class="grid" id="grid"></div>`);
@@ -621,17 +642,13 @@ async function pgCart() {
     </div>
     <div id="p-msg"></div>
   </div>
-  <div class="box"><div class="box-t">受取方法</div>
-    <label class="radio ${cart.method === 'ship' ? 'on' : ''}"><input type="radio" name="m" value="ship" ${cart.method === 'ship' ? 'checked' : ''}><div><b>配送（往復）</b> ${yen(setI('shipping_fee', 0))}<small>利用開始日までにお届けします。返却日に同梱の伝票で発送してください。</small></div></label>
-    <label class="radio ${cart.method === 'pickup' ? 'on' : ''}"><input type="radio" name="m" value="pickup" ${cart.method === 'pickup' ? 'checked' : ''}><div><b>店頭受取</b> 無料<small>${esc(S.settings.pickup_info || '')}</small></div></label>
+  <div class="box"><div class="box-t">お届け・返却</div>
+    <div class="ship-note"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 3h15v13H1zM16 8h4l3 3v5h-7z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+    <div><b style="color:var(--text)">往復配送</b>（送料 ${yen(setI('shipping_fee', 0))}）<br>利用開始日までにお届けします。返却日に同梱の伝票で発送してください。</div></div>
   </div>
   <div class="box" id="totals"></div>`);
   $('#d-s').onchange = (e) => { cart.start = e.target.value; if (cart.end && cart.end < cart.start) cart.end = cart.start; if (!cart.end) cart.end = cart.start; $('#d-e').value = cart.end; saveCart(); renderCart(); };
   $('#d-e').onchange = (e) => { cart.end = e.target.value; saveCart(); renderCart(); };
-  document.querySelectorAll('input[name=m]').forEach((r) => r.onchange = () => {
-    cart.method = r.value; saveCart();
-    document.querySelectorAll('.radio').forEach((l) => l.classList.toggle('on', l.querySelector('input').checked)); renderCart();
-  });
   cta(`<div class="sum"><small id="cta-s">合計（保証金・送料込）</small><b id="cta-v">—</b></div><button class="btn btn-gold" id="go-info" disabled>お客様情報へ</button>`);
   $('#go-info').onclick = () => { if (cartReady()) location.hash = '#/info'; };
   renderCart();
@@ -706,7 +723,7 @@ function pgInfo() {
       <input class="inp" id="f-${k}" type="${t}" placeholder="${esc(ph)}" value="${esc(v[k] || '')}" ${ac ? `autocomplete="${ac}"` : ''} ${k === 'zip' ? 'inputmode="numeric" maxlength="8"' : ''}>
       <div class="err-t" id="e-${k}"></div></div>`).join('')}
     <div class="fg"><label for="f-note">備考</label><textarea class="inp" id="f-note" rows="3" placeholder="使用目的・ご要望など">${esc(v.note || '')}</textarea></div>
-    <div style="font-size:12px;color:var(--muted)">※ 本人確認のため、受取時に身分証の提示をお願いする場合があります。</div>
+    <div style="font-size:12px;color:var(--muted)">※ レンタル品はご入力の住所へお届けします。必要に応じて本人確認書類のご提出をお願いする場合があります。</div>
   </div>`);
   $('#f-zip').addEventListener('input', async (e) => {
     const z = e.target.value.replace(/\D/g, '');
@@ -758,7 +775,6 @@ function pgConsent() {
   <div style="font-size:13px;color:var(--muted);margin-bottom:6px">ご予約の前に、必ずご本人が内容を確認し、チェックと署名をしてください。</div>
   <div class="box"><div class="box-t">ご予約内容</div>
     <div class="row"><span>ご利用期間</span><span>${jpD(cart.start)} 〜 ${jpD(cart.end)}（${c.days}日間）</span></div>
-    <div class="row"><span>受取方法</span><span>${cart.method === 'ship' ? '配送（往復）' : '店頭受取'}</span></div>
     ${c.lines.map((l) => `<div class="row"><span>${esc(l.it.name)} × ${l.qty}</span><span>${yen(l.line)}</span></div>`).join('')}
     <div class="row"><span>送料</span><span>${yen(c.ship)}</span></div>
     <div class="row"><span>保証金</span><span>${yen(c.dep)}</span></div>
@@ -772,7 +788,7 @@ function pgConsent() {
   ${items.length ? `<div class="box"><div class="box-t">✅ 重要事項のご確認</div>
     ${items.map((t, i) => `<label class="chk" data-i="${i}"><input type="checkbox" data-i="${i}"><span>${esc(t)}</span></label>`).join('')}</div>` : ''}
   <div class="box"><div class="box-t">✍️ ご署名</div>
-    <div style="font-size:13px;color:#c8cfdd;line-height:1.6;margin:0 2px 10px">上記の内容をご確認・ご同意のうえ、下の枠内にご署名（フルネーム）をお願いいたします。</div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.6;margin:0 2px 10px">上記の内容をご確認・ご同意のうえ、下の枠内にご署名（フルネーム）をお願いいたします。</div>
     <div class="sig-wrap"><canvas id="sig"></canvas></div>
     <div class="sig-meta"><span>署名者：${esc(cust.name)} 様</span><span>${now}</span></div>
     <button class="btn btn-ghost btn-block" style="margin-top:10px" id="sig-clear">🧹 署名を書き直す</button>
@@ -855,15 +871,15 @@ async function submitOrder() {
     const { data, error } = await sb.rpc('place_order', {
       p_customer: { name: cust.name, kana: cust.kana, email: cust.email, phone: cust.phone, zip: cust.zip, address: cust.address, note: cust.note || '' },
       p_items: cart.items.map((x) => ({ id: x.id, qty: x.qty })),
-      p_rental: { start: cart.start, end: cart.end, method: cart.method },
+      p_rental: { start: cart.start, end: cart.end },
       p_consent: { terms_agreed: 'true', checked: CS.checks, signature: sigDataURL('sig'), ua: navigator.userAgent },
     });
     if (error) throw error;
     // 確認メール（失敗しても予約は確定済み）
     sb.functions.invoke('send-mail', { body: { type: 'order', order_id: data.id, token: data.token } })
       .then(({ error: e }) => { if (e) console.warn('mail', e); }).catch((e) => console.warn('mail', e));
-    ssSet(DONE_KEY, { order_number: data.order_number, total: data.total, start: cart.start, end: cart.end, method: cart.method, email: cust.email });
-    cart = { items: [], start: '', end: '', method: cart.method }; saveCart();
+    ssSet(DONE_KEY, { order_number: data.order_number, total: data.total, start: cart.start, end: cart.end, email: cust.email });
+    cart = { items: [], start: '', end: '' }; saveCart();
     try { sessionStorage.removeItem(CUST_KEY); } catch (e) {}
     S.cal = {};
     location.hash = '#/done';
@@ -885,15 +901,14 @@ function pgDone() {
     <div class="ttl">ご予約ありがとうございます</div>
     <div style="color:var(--muted);font-size:13px">予約番号</div>
     <div class="onum">${esc(d.order_number)}</div>
-    <div style="font-size:13px;color:#c8cfdd;margin-top:6px">${esc(d.email)} に確認メールをお送りしました。</div>
+    <div style="font-size:13px;color:var(--text2);margin-top:6px">${esc(d.email)} に確認メールをお送りしました。</div>
   </div>
   <div class="box">
     <div class="row"><span>ご利用期間</span><span>${jpD(d.start)} 〜 ${jpD(d.end)}</span></div>
-    <div class="row"><span>受取方法</span><span>${d.method === 'ship' ? '配送（往復）' : '店頭受取'}</span></div>
     <div class="row tot"><span>お支払い合計</span><b>${yen(d.total)}</b></div>
   </div>
   <div class="box"><div class="box-t">お支払い（銀行振込）</div>
-    <div class="pre" style="background:#0a0f1f;border:1px solid var(--line2);border-radius:10px;padding:12px">${esc(S.settings.bank_info || '')}</div>
+    <div class="pre pre-box">${esc(S.settings.bank_info || '')}</div>
     <div style="font-size:12px;color:var(--muted);margin-top:8px">振込名義の前に予約番号の数字（${esc(String(d.order_number).replace(/\D/g, '').slice(-6))}）をご入力ください。${days > 0 ? `<br>${days}日以内にご入金が確認できない場合、ご予約は自動でキャンセルされます。` : ''}</div>
   </div>
   <div style="text-align:center;margin-top:24px"><a class="btn btn-ghost" href="#/">トップへ戻る</a></div>`);
@@ -905,7 +920,7 @@ function pgTerms() {
   setApp(`<button class="back" onclick="location.hash='#/'">‹ トップへ</button>
   <div class="ttl">利用規約</div>
   <div class="box"><div class="pre">${esc(S.settings.terms_text || '')}</div></div>
-  ${items.length ? `<div class="box"><div class="box-t">ご予約時に確認いただく事項</div><ul style="padding-left:20px;font-size:14px;color:#c8cfdd">${items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}`);
+  ${items.length ? `<div class="box"><div class="box-t">ご予約時に確認いただく事項</div><ul style="padding-left:20px;font-size:14px;color:var(--text2)">${items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}`);
 }
 
 boot();

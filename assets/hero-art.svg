@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" viewBox="840 0 960 700" preserveAspectRatio="xMidYMax slice" role="img" aria-labelledby="title desc">
+<title id="title">toolly</title><desc id="desc">A crafted editorial style hero for Toolly, an approachable tool rental service, with a warm workshop still life.</desc>
+<defs>
+ <linearGradient id="wall" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fbfaf6"/><stop offset=".55" stop-color="#f2f2eb"/><stop offset="1" stop-color="#e7eeeb"/></linearGradient>
+ <linearGradient id="table" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d8c9b0"/><stop offset="1" stop-color="#c8b69a"/></linearGradient>
+ <linearGradient id="teal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#668694"/><stop offset="1" stop-color="#3f5d6a"/></linearGradient>
+ <linearGradient id="warm" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2a471"/><stop offset="1" stop-color="#dc7854"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8f8f2"/><stop offset=".5" stop-color="#cbd5d0"/><stop offset="1" stop-color="#899c9c"/></linearGradient>
+ <radialGradient id="glow"><stop stop-color="#fff7dc" stop-opacity=".9"/><stop offset="1" stop-color="#fff7dc" stop-opacity="0"/></radialGradient>
+ <filter id="softShadow" x="-.3" y="-.3" width="1.7" height="1.8"><feGaussianBlur in="SourceAlpha" stdDeviation="16"/><feOffset dy="17"/><feComponentTransfer><feFuncA type="linear" slope=".17"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="tinyShadow" x="-.3" y="-.3" width="1.6" height="1.8"><feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#354950" flood-opacity=".18"/></filter>
+ <pattern id="grain" width="90" height="90" patternUnits="userSpaceOnUse"><path d="M0 13h90M0 56h90" stroke="#586b65" stroke-opacity=".025"/><circle cx="20" cy="30" r=".7" fill="#667a72" opacity=".11"/><circle cx="68" cy="72" r=".7" fill="#667a72" opacity=".1"/></pattern>
+ <pattern id="wood" width="140" height="42" patternUnits="userSpaceOnUse"><path d="M0 8q36-6 70 0t70 0M0 31q36 6 70 0t70 0" fill="none" stroke="#866f53" stroke-opacity=".12" stroke-width="1.2"/><path d="M21 18h40m32 12h35" stroke="#fff5e5" stroke-opacity=".25"/></pattern>
+</defs>
+<!-- warm architectural backdrop -->
+<rect width="1800" height="700" fill="url(#wall)"/><rect width="1800" height="700" fill="url(#grain)"/>
+<circle cx="1432" cy="266" r="330" fill="url(#glow)"/>
+<!-- understated window frame and sun -->
+<g opacity=".44"><path d="M1160 0h640v295h-640z" fill="#e4ece7"/><path d="M1473 0v295M1160 149h640" stroke="#fbfaf6" stroke-width="12"/><path d="M1180 282l202-270M1491 286l280-281" stroke="#fff" stroke-opacity=".45" stroke-width="2"/></g>
+<!-- layered workshop counter -->
+<path d="M836 491q310-43 964-3v212H836z" fill="#d6c8b1"/><path d="M836 491q310-43 964-3v212H836z" fill="url(#wood)"/><path d="M836 491q310-43 964-3" fill="none" stroke="#f8f0e1" stroke-width="7" opacity=".8"/>
+<path d="M836 520q490-54 964-18" fill="none" stroke="#9f8c70" stroke-width="1" opacity=".35"/>
+<!-- framed pegboard -->
+<g opacity=".72"><rect x="1050" y="95" width="632" height="300" rx="8" fill="#e7e6dc"/><rect x="1062" y="107" width="608" height="276" rx="4" fill="#eeeae0"/><path d="M1086 130h560M1086 164h560M1086 198h560M1086 232h560M1086 266h560M1086 300h560M1086 334h560" stroke="#c8cdc4" stroke-width="2" stroke-dasharray="1 20" stroke-linecap="round"/><path d="M1086 130v225M1120 130v225M1154 130v225M1188 130v225M1222 130v225M1256 130v225M1290 130v225M1324 130v225M1358 130v225M1392 130v225M1426 130v225M1460 130v225M1494 130v225M1528 130v225M1562 130v225M1596 130v225" stroke="#c8cdc4" stroke-width="2" stroke-dasharray="1 20" stroke-linecap="round"/></g>
+<!-- hanging hand saw -->
+<g transform="translate(1470 143) rotate(-4)" filter="url(#tinyShadow)"><path d="M28 49h161l-18 120H46z" fill="url(#steel)"/><path d="M45 61h120" stroke="#fff" stroke-width="4" opacity=".7"/><path d="M164 59l23 4-14 15-23-4z" fill="#e58b63"/><path d="M40 168l10-6 9 9 9-9 9 9 9-9 9 9 9-9 9 9 9-9 9 9 9-9 9 9 9-9 9 9 9-9 9 8" fill="#bbc7c2"/></g>
+<!-- plant on shelf -->
+<g transform="translate(1650 194)" opacity=".83"><path d="M8 74q8-49 32-60-5 32-22 53 29-45 61-41-15 27-55 45 39-29 73-12-24 25-69 26" fill="#80968a"/><path d="M30 70V28M37 72l38-26M39 70l-20-26" stroke="#647f75" stroke-width="2"/><path d="M12 77h77l-9 61H23z" fill="#dc9873"/><path d="M12 78h77" stroke="#f6c7a7" stroke-width="5"/></g>
+<!-- cordless drill, hero object -->
+<g transform="translate(1012 267) rotate(-8 200 140)" filter="url(#softShadow)">
+ <!-- battery foot --> <path d="M150 344h136l-11 43q-3 12-16 12h-91q-15 0-18-13z" fill="#e38a62"/><path d="M171 357h92" stroke="#ffd4b6" stroke-width="5" stroke-linecap="round"/>
+ <!-- handle --> <path d="M143 205h131l-8 139H168q-20 0-23-20z" fill="url(#teal)"/><path d="M169 229h25v104h-25q-10 0-11-12V241q0-12 11-12" fill="#e8eee9" opacity=".18"/><path d="M181 257v48" stroke="#a4bcc0" stroke-width="4" stroke-linecap="round"/>
+ <!-- drill body --> <path d="M49 68h287q29 0 29 29v111q0 29-29 29H49q-23 0-23-23V91q0-23 23-23" fill="url(#teal)"/><path d="M50 81h178v35H50z" fill="#7694a0" opacity=".8"/><path d="M273 87h69v124h-69z" fill="#d7e0da"/><path d="M335 109h75v80h-75z" fill="#acbcb8"/><path d="M410 128h65v41h-65z" fill="url(#steel)"/><path d="M475 136h27v25h-27z" fill="#758b8c"/>
+ <!-- vents and controls --> <circle cx="245" cy="148" r="13" fill="#e9946b"/><circle cx="245" cy="148" r="5" fill="#ffe0c5"/><path d="M74 103h100" stroke="#bfd0ce" stroke-width="3" opacity=".65"/><path d="M72 185h90" stroke="#bfd0ce" stroke-width="3" opacity=".4"/><path d="M115 223h51" stroke="#f6ad83" stroke-width="5" stroke-linecap="round"/>
+ <path d="M502 139h31" stroke="#829797" stroke-width="7" stroke-linecap="round"/>
+ <!-- subtle toolly badge --> <rect x="68" y="135" width="83" height="27" rx="13.5" fill="#f4f2e9" opacity=".95"/><text x="109" y="153" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.5" fill="#496a77">toolly</text>
+</g>
+<!-- toolbox foreground -->
+<g transform="translate(1392 457) rotate(2)" filter="url(#tinyShadow)"><path d="M19 35h236l24 43v133H0V78z" fill="#e28c64"/><path d="M72 36V19q0-13 13-13h103q13 0 13 13v17" fill="none" stroke="#587987" stroke-width="13" stroke-linecap="round"/><path d="M0 85h279v29H0z" fill="#cc7552"/><rect x="113" y="94" width="54" height="16" rx="8" fill="#f8ddc9"/><path d="M27 140h57v42H27zm168 0h57v42h-57z" fill="#edaa83"/><path d="M35 149h40m128 0h40" stroke="#f9c9a8" stroke-width="3" opacity=".65"/></g>
+<!-- tape measure & pencil on bench -->
+<g transform="translate(1123 530) rotate(-8)" filter="url(#tinyShadow)"><rect x="0" y="0" width="94" height="55" rx="15" fill="#e28c64"/><circle cx="47" cy="27" r="16" fill="#f6e6d5"/><circle cx="47" cy="27" r="7" fill="#8b9e99"/><path d="M89 15h38v25H89" fill="#d6d8ce"/><path d="M-27 70h166" stroke="#617d82" stroke-width="9" stroke-linecap="round"/><path d="M-27 70l14-5v10z" fill="#e28c64"/></g>
+<!-- little screw cluster -->
+<g transform="translate(1320 579) rotate(22)" fill="#899999"><path d="M0 0h56v7H0zM9-5h7v17H9zm34-5h7v17h-7z"/><path d="M82 4h48v6H82zM91 0h7v14h-7zm29-5h7v14h-7z"/></g>
+<!-- plant leaves overlap foreground edge -->
+<g transform="translate(1678 453)" opacity=".88"><path d="M56 226V73M56 143Q5 104 9 62q49 15 54 64M58 124q56-44 49-86-47 19-53 72M55 188Q8 158 0 125q45 5 61 46M58 170q49-29 57-69-46 8-62 47" fill="#779083"/><path d="M22 223h73l-9 69H31z" fill="#82988d"/><path d="M22 224h73" stroke="#afc1b5" stroke-width="5"/></g>
+<!-- tiny decorative label -->
+<g transform="translate(927 118) rotate(-5)" opacity=".75"><rect width="78" height="37" rx="4" fill="#fffdf8" stroke="#dce2da"/><path d="M12 11h36M12 18h51M12 25h28" stroke="#92a29c" stroke-width="2" stroke-linecap="round"/></g>
+</svg>
+
