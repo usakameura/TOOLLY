@@ -102,7 +102,12 @@ textarea.inp{line-height:1.6;resize:vertical}
 .imgs .im img{width:100%;height:100%;object-fit:cover}
 .imgs .im button{position:absolute;top:4px;width:24px;height:24px;border-radius:50%;border:none;background:rgba(0,0,0,.7);color:#fff;font-size:12px}
 .imgs .im .x{right:4px}.imgs .im .l{left:4px}
-.imgs label{aspect-ratio:1/1;border:1.5px dashed var(--line2);border-radius:9px;display:grid;place-items:center;color:var(--muted);font-size:24px;cursor:pointer}
+.imgs .add{aspect-ratio:1/1;border:1.5px dashed var(--line2);border-radius:9px;display:grid;place-items:center;color:var(--muted);font-size:24px;cursor:pointer;background:#fff;font-family:inherit}
+.imgs .up{display:grid;place-items:center;border:1.5px dashed var(--line2)}
+.imgs .up .spin{margin:0;width:22px;height:22px}
+.vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;opacity:0}
+.img-err{display:none;margin-top:10px;padding:10px 12px;border-radius:10px;background:#fdecea;border:1px solid #f6c9c3;color:#8a1c12;font-size:12px;line-height:1.6;white-space:pre-wrap}
+.img-err.on{display:block}
 .switch{position:relative;width:46px;height:26px;flex-shrink:0}
 .switch input{opacity:0;width:0;height:0}
 .switch i{position:absolute;inset:0;background:#d1d5db;border-radius:13px;transition:.2s}
@@ -589,7 +594,7 @@ let EI = null; // 編集中の商品
 function editItem(id) {
   const it = id ? A.items.find((x) => x.id === id) : null;
   EI = it ? { ...it, images: [...(it.images || [])] } : { id: null, name: '', category_id: null, maker: '', model: '', description: '', specs: '', price_day: 0, price_extra_day: 0, sale_price_day: null, deposit: 0, stock: 1, images: [], is_active: true, sort: 0 };
-  EI._uploaded = []; EI._removed = [];
+  EI._uploaded = []; EI._removed = []; EI._busy = 0;
   openSheet(it ? '商品を編集' : '商品を追加', `
   <div class="card">
     <div class="fg"><label>商品名 *</label><input class="inp" id="e-name" value="${esc(EI.name)}"></div>
@@ -608,7 +613,9 @@ function editItem(id) {
     <div class="fg"><label>表示順（小さいほど上）</label><input class="inp" id="e-sort" type="number" inputmode="numeric" value="${EI.sort}"></div></div>
     <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-weight:700">サイトに公開する</span><label class="switch"><input type="checkbox" id="e-active" ${EI.is_active ? 'checked' : ''}><i></i></label></div>
   </div>
-  <div class="card"><div class="sec-t">画像（1枚目がサムネイル）</div><div class="imgs" id="e-imgs"></div></div>
+  <div class="card"><div class="sec-t">画像（1枚目がサムネイル）</div><div class="imgs" id="e-imgs"></div>
+    <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/*" multiple class="vh" id="e-file" tabindex="-1">
+    <div class="img-err" id="e-img-err"></div></div>
   <div class="card">
     <div class="fg"><label>仕様（1行ずつ）</label><textarea class="inp" id="e-specs" rows="4" placeholder="電圧：18V&#10;重量：1.5kg&#10;付属品：バッテリー2個・充電器">${esc(EI.specs)}</textarea></div>
     <div class="fg"><label>説明</label><textarea class="inp" id="e-desc" rows="5">${esc(EI.description)}</textarea></div>
@@ -620,40 +627,89 @@ function editItem(id) {
   if (it) $('#e-del').onclick = deleteItem;
 }
 function drawImgs() {
+  const busy = EI._busy || 0;
   $('#e-imgs').innerHTML = EI.images.map((u, i) => `<div class="im"><img src="${esc(u)}" alt="">${i ? `<button class="l" data-l="${i}">‹</button>` : ''}<button class="x" data-x="${i}">✕</button></div>`).join('') +
-    (EI.images.length < 8 ? '<label>＋<input type="file" accept="image/*" multiple hidden id="e-file"></label>' : '');
+    Array.from({ length: busy }, () => '<div class="im up"><div class="spin"></div></div>').join('') +
+    (EI.images.length + busy < 8 ? '<button type="button" class="add" id="e-add" aria-label="画像を追加">＋</button>' : '');
   document.querySelectorAll('#e-imgs [data-x]').forEach((b) => (b.onclick = () => { const [u] = EI.images.splice(+b.dataset.x, 1); EI._removed.push(u); drawImgs(); }));
   document.querySelectorAll('#e-imgs [data-l]').forEach((b) => (b.onclick = () => { const i = +b.dataset.l; [EI.images[i - 1], EI.images[i]] = [EI.images[i], EI.images[i - 1]]; drawImgs(); }));
-  const f = $('#e-file'); if (f) f.onchange = () => uploadImgs([...f.files]);
+  const add = $('#e-add'); if (add) add.onclick = () => $('#e-file').click();
+  const f = $('#e-file');
+  if (f && !f._bound) {
+    f._bound = true;
+    f.onchange = () => { const list = [...f.files]; f.value = ''; uploadImgs(list); };
+  }
+  const sv = $('#e-save');
+  if (sv) { sv.disabled = busy > 0; sv.textContent = busy > 0 ? '画像をアップロード中…' : '保存する'; }
 }
-function compress(file, max = 1280, q = 0.78) {
+function imgErr(msg) {
+  const el = $('#e-img-err'); if (!el) return;
+  el.textContent = msg || ''; el.classList.toggle('on', !!msg);
+}
+const isHeic = (f) => /image\/hei[cf]/i.test(f.type) || /\.(heic|heif)$/i.test(f.name || '');
+function decodeImage(file) {
   return new Promise((res, rej) => {
     const url = URL.createObjectURL(file); const img = new Image();
-    img.onload = () => {
-      const s = Math.min(1, max / Math.max(img.width, img.height));
-      const c = document.createElement('canvas'); c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
-      c.toBlob((b) => (b ? res(b) : rej(new Error('画像を変換できませんでした'))), 'image/jpeg', q);
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('画像を読み込めませんでした')); };
+    img.onload = () => res({ img, url });
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('decode')); };
     img.src = url;
   });
 }
+/* 画像を最大1280pxのJPEGに縮小。読めない形式でも、JPEG/PNG/WebPならそのまま送る */
+async function compress(file, max = 1280, q = 0.78) {
+  let d;
+  try { d = await decodeImage(file); }
+  catch (e) {
+    if (/^image\/(jpeg|png|webp)$/i.test(file.type) && file.size <= 10 * 1024 * 1024) return { blob: file, type: file.type };
+    if (isHeic(file)) throw new Error('この端末ではHEIC形式（iPhoneの写真）を読み込めませんでした。\n・iPhoneのSafariから登録する\n・またはiPhoneの「設定 → カメラ → フォーマット → 互換性優先」に変えて撮った写真を使う\nのどちらかでお試しください。');
+    throw new Error('この画像は読み込めませんでした（JPEG・PNG・WebPを選んでください）');
+  }
+  const { img, url } = d;
+  try {
+    const s = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(img.naturalWidth * s)); c.height = Math.max(1, Math.round(img.naturalHeight * s));
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+    const blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', q));
+    if (blob) return { blob, type: 'image/jpeg' };
+    if (file.size <= 10 * 1024 * 1024 && /^image\/(jpeg|png|webp)$/i.test(file.type)) return { blob: file, type: file.type };
+    throw new Error('画像を変換できませんでした');
+  } finally { URL.revokeObjectURL(url); }
+}
+function uploadErrText(e) {
+  const m = String(e?.message || e || '');
+  if (/bucket not found/i.test(m)) return '画像の保存先（item-images）がSupabaseにありません。\nSQL Editorで storage_fix.sql を実行してください。';
+  if (/row-level security|unauthorized|403|not allowed|permission/i.test(m)) return '画像を保存する権限がありません。\n・管理者としてログインしているか（admins に登録済みか）\n・SQL Editorで storage_fix.sql を実行したか\nを確認してください。\n（詳細：' + m + '）';
+  if (/jwt|expired|token/i.test(m)) return 'ログインの有効期限が切れています。いったんログアウトして、もう一度ログインしてください。';
+  if (/failed to fetch|network|load failed/i.test(m)) return '通信できませんでした。電波の良い場所でもう一度お試しください。';
+  return m || 'アップロードに失敗しました';
+}
 async function uploadImgs(files) {
-  const room = 8 - EI.images.length; files = files.slice(0, room);
+  const ed = EI; if (!ed) return;
+  const room = 8 - ed.images.length - (ed._busy || 0); files = files.slice(0, Math.max(room, 0));
   if (!files.length) return;
-  toast('アップロード中…');
+  imgErr('');
+  ed._busy = (ed._busy || 0) + files.length; drawImgs();
+  let ok = 0; const errs = [];
   for (const f of files) {
     try {
-      const blob = await compress(f);
-      const path = `items/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
-      const { error } = await sb.storage.from(BUCKET).upload(path, blob, { contentType: 'image/jpeg', upsert: false });
+      const { blob, type } = await compress(f);
+      const ext = type === 'image/png' ? 'png' : type === 'image/webp' ? 'webp' : 'jpg';
+      const path = `items/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await sb.storage.from(BUCKET).upload(path, blob, { contentType: type, upsert: false, cacheControl: '31536000' });
       if (error) throw error;
       const u = sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
-      EI.images.push(u); EI._uploaded.push(u); drawImgs();
-    } catch (e) { showErr(e); }
+      if (EI !== ed) { removeFiles([u]); continue; } // 編集を閉じた後に終わった分は片付ける
+      ed.images.push(u); ed._uploaded.push(u); ok++;
+    } catch (e) {
+      console.error('upload', e);
+      errs.push(`${f.name || '画像'}：${uploadErrText(e)}`);
+    } finally {
+      ed._busy--; if (EI === ed) drawImgs();
+    }
   }
-  toast('画像を追加しました（保存で確定）');
+  if (EI !== ed) return;
+  if (errs.length) { imgErr(errs.join('\n\n')); toast(`⚠️ ${errs.length}枚アップロードできませんでした`, true); }
+  else if (ok) toast(`画像を${ok}枚追加しました（保存で確定）`);
 }
 function pathOf(u) { const k = `/object/public/${BUCKET}/`; const i = u.indexOf(k); return i >= 0 ? decodeURIComponent(u.slice(i + k.length)) : null; }
 async function removeFiles(urls) { const p = urls.map(pathOf).filter(Boolean); if (p.length) { const { error } = await sb.storage.from(BUCKET).remove(p); if (error) console.warn(error); } }
@@ -671,6 +727,7 @@ async function saveItem() {
     if (Number.isNaN(rec[k])) return toast(`${l}は0以上の整数で入力してください`, true);
   }
   if (rec.sale_price_day != null && rec.sale_price_day >= rec.price_day) return toast('セール料金は通常の1日目料金より安くしてください', true);
+  if (EI._busy > 0) return toast('画像のアップロードが終わるまでお待ちください', true);
   const b = $('#e-save'); b.disabled = true;
   try {
     const q = EI.id ? sb.from('items').update(rec).eq('id', EI.id) : sb.from('items').insert(rec);
